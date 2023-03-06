@@ -1,2 +1,3 @@
-# template-repo
-Template repository with standard files and settings
+# JWT Block
+
+A JWT blocklist using Go and AWS.
