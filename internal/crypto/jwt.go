@@ -11,8 +11,9 @@ import (
 	"divergent.codes/jwt-block/internal/core"
 )
 
+// General error messages from JWT utilities.
 var (
-	ErrJwtVerificationKeyNotSet = errors.New("No key set for JWT verification")
+	ErrJwtVerificationKeyNotSet = errors.New("no key set for JWT verification")
 )
 
 func getJwtParserOptions() ([]jwt.ParseOption, error) {
@@ -66,6 +67,9 @@ func getJwtParserOptions() ([]jwt.ParseOption, error) {
 	return jwtParseOptions, nil
 }
 
+// Check a JWT by parsing, validating, and verifying.
+//
+// JWT parsing, validation, and verification are configurable.
 func RunJwtChecks(tokenString string) (jwt.Token, error) {
 	// Parse and verify the JWT.
 	logger := core.GetLogger()

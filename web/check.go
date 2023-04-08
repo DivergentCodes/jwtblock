@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/spf13/viper"
+
 	"divergent.codes/jwt-block/internal/blocklist"
 	"divergent.codes/jwt-block/internal/cache"
 	"divergent.codes/jwt-block/internal/core"
-	"github.com/spf13/viper"
 )
 
 // Handler for /blocklist/check
@@ -68,5 +69,12 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 		status_code := viper.GetInt(core.OptStr_HttpStatusOnAllowed)
 		w.WriteHeader(status_code)
 	}
-	json.NewEncoder(w).Encode(result)
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		logger.Errorw(
+			"failed to JSON encode response data",
+			"data", result,
+			"error", err,
+		)
+	}
 }

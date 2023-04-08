@@ -6,14 +6,18 @@ import (
 	"divergent.codes/jwt-block/internal/crypto"
 )
 
+// A CheckResult contains the result of checking for a token in the blocklist.
 type CheckResult struct {
-	Message   string `json:"message"`
-	IsBlocked bool   `json:"blocked"`
-	TTL       int    `json:"block_ttl_sec"`
-	TTLString string `json:"block_ttl_str"`
-	IsError   bool   `json:"error"`
+	Message   string `json:"message"`       // message summarizing the result.
+	IsBlocked bool   `json:"blocked"`       // whether or not the token is blocked (present in the blocklist).
+	TTL       int    `json:"block_ttl_sec"` // remaining time-to-live of the token in the blocklist.
+	TTLString string `json:"block_ttl_str"` // human readable remaining time-to-live.
+	IsError   bool   `json:"error"`         // whether or not the result was an error.
 }
 
+// CheckByJwt checks if a token's hash value is in the blocklist.
+//
+// The passed tokenString will be hashed and looked up.
 func CheckByJwt(redisDB *redis.Client, tokenString string) (CheckResult, error) {
 	// Parse, validate, verify the JWT.
 	var checkResult CheckResult
@@ -26,6 +30,7 @@ func CheckByJwt(redisDB *redis.Client, tokenString string) (CheckResult, error) 
 	return CheckBySha256(redisDB, key)
 }
 
+// CheckBySha256 checks if the hash value of a token is in the blocklist.
 func CheckBySha256(redisDB *redis.Client, sha256 string) (CheckResult, error) {
 	// Verify the hash.
 	var checkResult CheckResult

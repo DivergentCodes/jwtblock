@@ -6,12 +6,14 @@ import (
 	"divergent.codes/jwt-block/internal/crypto"
 )
 
+// A UnblockResult contains the result of unblocking a token in the blocklist.
 type UnblockResult struct {
-	Message     string `json:"message"`
-	IsUnblocked bool   `json:"unblocked"`
-	IsError     bool   `json:"error"`
+	Message     string `json:"message"`   // message summarizing the result.
+	IsUnblocked bool   `json:"unblocked"` // whether or not the token was unblocked (removed from the blocklist).
+	IsError     bool   `json:"error"`     // whether or not the result was an error.
 }
 
+// UnblockByJwt removes a token's hash from the blocklist by first hashing the passed token.
 func UnblockByJwt(redisDB *redis.Client, tokenString string) (*UnblockResult, error) {
 	result := &UnblockResult{
 		IsError: false,
@@ -29,6 +31,7 @@ func UnblockByJwt(redisDB *redis.Client, tokenString string) (*UnblockResult, er
 	return UnblockBySha256(redisDB, key)
 }
 
+// UnblockBySha256 removes the passed token hash from the blocklist.
 func UnblockBySha256(redisDB *redis.Client, sha256 string) (*UnblockResult, error) {
 	result := &UnblockResult{
 		IsError: false,

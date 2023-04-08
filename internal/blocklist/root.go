@@ -1,3 +1,6 @@
+// Package blocklist manages inspecting tokens and interacting with the cache
+//
+// Includes JWT parsing, validation, and verification. Also includes cache management and lookup functions.
 package blocklist
 
 import (

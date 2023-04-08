@@ -26,12 +26,20 @@ func init() {
 
 func list(cmd *cobra.Command, args []string) {
 	ShowBanner()
+	logger := core.GetLogger()
 
 	redisDB := cache.GetRedisClient()
 	result, _ := blocklist.List(redisDB)
 
 	if viper.GetBool(core.OptStr_OutJSON) {
-		json.NewEncoder(os.Stdout).Encode(result)
+		err := json.NewEncoder(os.Stdout).Encode(result)
+		if err != nil {
+			logger.Errorw(
+				"failed to JSON encode response data",
+				"data", result,
+				"error", err,
+			)
+		}
 	} else {
 		if len(result.TokenHashes) == 0 {
 			fmt.Println("No token hashes in the blocklist")

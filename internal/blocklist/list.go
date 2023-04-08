@@ -6,12 +6,14 @@ import (
 	"divergent.codes/jwt-block/internal/core"
 )
 
+// A ListResult contains the result of listing token hashes in the blocklist.
 type ListResult struct {
-	TokenHashes []string `json:"token_hashes"`
-	Size        int64    `json:"size"`
-	IsError     bool     `json:"error"`
+	TokenHashes []string `json:"token_hashes"` // hashes of blocked tokens.
+	Size        int64    `json:"size"`         // the number of blocked tokens.
+	IsError     bool     `json:"error"`        // whether or not the result was an error.
 }
 
+// List will dump all token hashes in the cache.
 func List(redisDB *redis.Client) (*ListResult, error) {
 	logger := core.GetLogger()
 	result := &ListResult{

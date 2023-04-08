@@ -11,25 +11,29 @@ import (
 	"divergent.codes/jwt-block/internal/crypto"
 )
 
+// A BlockResult contains the result of trying to block a token.
 type BlockResult struct {
-	Message   string `json:"message"`
-	TTL       int    `json:"block_ttl_sec"`
-	TTLString string `json:"block_ttl_str"`
-	IsNew     bool   `json:"is_new"`
-	IsError   bool   `json:"error"`
+	Message   string `json:"message"`       // message summarizing the result.
+	TTL       int    `json:"block_ttl_sec"` // remaining time-to-live of the token in the blocklist.
+	TTLString string `json:"block_ttl_str"` // human readable remaining time-to-live.
+	IsNew     bool   `json:"is_new"`        // whether or not the token is newly added to the blocklist.
+	IsError   bool   `json:"error"`         // whether or not the result was an error.
 }
 
+// Block adds a token to the blocklist without an explicit TTL, and returns whether the added value is new or not..
 func Block(redisDB *redis.Client, tokenString string) (*BlockResult, error) {
 	// Add token to blocklist without an explicitly passed TTL.
 	return BlockWithTTL(redisDB, tokenString, -1)
 }
 
+// Block adds a token to the blocklist with an explicit TTL, and returns whether the added value is new or not.
+//
+// explicitTTLSeconds behavior:
+//
+//	<0: Default TTL.
+//	0: Infinite TTL.
+//	>0: Expiring TTL.
 func BlockWithTTL(redisDB *redis.Client, tokenString string, explicitTTLSeconds int) (*BlockResult, error) {
-	// Add a JWT to the blocklist. Returns whether the added value is new or not.
-	// explicitTTLSeconds:
-	// - <0: Default TTL.
-	// - 0: Infinite TTL.
-	// - >0: Expiring TTL.
 	logger := core.GetLogger()
 	result := &BlockResult{
 		TTL:     -1,

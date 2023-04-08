@@ -68,6 +68,7 @@ func initZapLogger() *zap.SugaredLogger {
 	return logger.Sugar()
 }
 
+// GetLogger returns a singleton of a configured zap logger.
 func GetLogger() *zap.SugaredLogger {
 
 	once.Do(func() {

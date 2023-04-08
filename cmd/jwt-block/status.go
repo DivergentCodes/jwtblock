@@ -19,6 +19,7 @@ var statusCmd = &cobra.Command{
 	Run:   status,
 }
 
+// A StatusData contains the status of the blocklist.
 type StatusData struct {
 	Size int64 `json:"size"`
 }

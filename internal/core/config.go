@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Initialize the application configuration settings and defaults.
 func InitConfigDefaults() {
 	initRootDefaults()
 	initBlocklistDefaults()
@@ -17,8 +18,8 @@ func InitConfigDefaults() {
 	initConfigEnv()
 }
 
+// Root configuration options
 var (
-	// Root options
 	OptStr_Debug   = "debug"
 	OptStr_OutJSON = "out-json"
 	OptStr_Quiet   = "quiet"
@@ -32,8 +33,8 @@ func initRootDefaults() {
 	viper.SetDefault(OptStr_Verbose, false)
 }
 
+// Blocklist configuration options
 var (
-	// Blocklist options
 	OptStr_JwtParseEnabled    = "jwt.parse.enabled"
 	OptStr_JwtValidateEnabled = "jwt.validate.enabled"
 
@@ -63,8 +64,8 @@ func initBlocklistDefaults() {
 	viper.SetDefault(OptStr_JwtTTLRequireTokenExp, false)
 }
 
+// Redis configuration options
 var (
-	// Redis options
 	OptStr_RedisHost        = "redis.host"
 	OptStr_RedisPort        = "redis.port"
 	OptStr_RedisDbnum       = "redis.dbnum"
@@ -80,12 +81,12 @@ func initRedisDefaults() {
 	viper.SetDefault(OptStr_RedisDbnum, 0)
 	viper.SetDefault(OptStr_RedisUsername, "")
 	viper.SetDefault(OptStr_RedisPassword, "")
-	viper.SetDefault(OptStr_RedisTlsEnabled, false)
+	viper.SetDefault(OptStr_RedisTlsEnabled, true)
 	viper.SetDefault(OptStr_RedisTlsNoverify, false)
 }
 
+// HTTP service configuration options
 var (
-	// HTTP options
 	OptStr_HttpHostname        = "http.hostname"
 	OptStr_HttpPort            = "http.port"
 	OptStr_HttpStatusOnAllowed = "http.status_on_allowed"

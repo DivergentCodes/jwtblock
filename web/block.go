@@ -2,18 +2,12 @@ package web
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strings"
 
 	"divergent.codes/jwt-block/internal/blocklist"
 	"divergent.codes/jwt-block/internal/cache"
 	"divergent.codes/jwt-block/internal/core"
-)
-
-var (
-	ErrHttpMethodOnlyPost  = errors.New("invalid HTTP method. Only POST is allowed")
-	ErrMissingInvalidToken = errors.New("missing or invalid token data in POST body")
 )
 
 // Handler for /blocklist/block
@@ -60,5 +54,12 @@ func jwtBlock(w http.ResponseWriter, r *http.Request) {
 	// Response.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(result)
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		logger.Errorw(
+			"failed to JSON encode response data",
+			"data", result,
+			"error", err,
+		)
+	}
 }

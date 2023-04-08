@@ -27,7 +27,10 @@ func init() {
 	// jwt.ttl.sec_specified
 	specifiedTTL := viper.GetInt(core.OptStr_JwtTTLSpecifiedSeconds)
 	blockCmd.Flags().IntP("ttl", "t", specifiedTTL, "TTL for token blocking in seconds")
-	viper.BindPFlag(core.OptStr_JwtTTLSpecifiedSeconds, blockCmd.Flags().Lookup("ttl"))
+	err := viper.BindPFlag(core.OptStr_JwtTTLSpecifiedSeconds, blockCmd.Flags().Lookup("ttl"))
+	if err != nil {
+		panic(err)
+	}
 
 	rootCmd.AddCommand(blockCmd)
 }

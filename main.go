@@ -19,5 +19,8 @@ func main() {
 }
 
 func runCli() {
-	cmd.Execute()
+	err := cmd.Execute()
+	if err != nil {
+		panic(err)
+	}
 }

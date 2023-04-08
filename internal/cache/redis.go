@@ -1,3 +1,4 @@
+// Package cache implements a standardized, pre-configured Redis cache client.
 package cache
 
 import (
@@ -42,6 +43,7 @@ func initRedisClient() *redis.Client {
 	return client
 }
 
+// GetRedisClient returns a singleton of a configured Redis client.
 func GetRedisClient() *redis.Client {
 	once.Do(func() {
 		if redisClient == nil {
@@ -55,6 +57,7 @@ func GetRedisClient() *redis.Client {
 	return redisClient
 }
 
+// SetRedisClient overrides and explicitly sets the Redis client singleton.
 func SetRedisClient(rc *redis.Client) {
 	redisClient = rc
 }

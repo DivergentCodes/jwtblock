@@ -21,25 +21,39 @@ var (
 
 func init() {
 
+	var err error
+
 	// http.hostname
 	defaultHost := viper.GetString(core.OptStr_HttpHostname)
 	serveCmd.Flags().String("hostname", defaultHost, "Hostname to listen on")
-	viper.BindPFlag(core.OptStr_HttpHostname, serveCmd.Flags().Lookup("hostname"))
+	err = viper.BindPFlag(core.OptStr_HttpHostname, serveCmd.Flags().Lookup("hostname"))
+	if err != nil {
+		panic(err)
+	}
 
 	// http.port
 	defaultPort := viper.GetInt(core.OptStr_HttpPort)
 	serveCmd.Flags().IntP("port", "p", defaultPort, "TCP port to listen on")
-	viper.BindPFlag(core.OptStr_HttpPort, serveCmd.Flags().Lookup("port"))
+	err = viper.BindPFlag(core.OptStr_HttpPort, serveCmd.Flags().Lookup("port"))
+	if err != nil {
+		panic(err)
+	}
 
 	// http.status_on_allowed
 	defaultStatusAllowed := viper.GetInt(core.OptStr_HttpStatusOnAllowed)
 	serveCmd.Flags().Int("status-on-allowed", defaultStatusAllowed, "HTTP response code when token is allowed")
-	viper.BindPFlag(core.OptStr_HttpStatusOnAllowed, serveCmd.Flags().Lookup("status-on-allowed"))
+	err = viper.BindPFlag(core.OptStr_HttpStatusOnAllowed, serveCmd.Flags().Lookup("status-on-allowed"))
+	if err != nil {
+		panic(err)
+	}
 
 	// http.status_on_blocked
 	defaultStatusBlocked := viper.GetInt(core.OptStr_HttpStatusOnBlocked)
 	serveCmd.Flags().Int("status-on-blocked", defaultStatusBlocked, "HTTP response code when token is blocked")
-	viper.BindPFlag(core.OptStr_HttpStatusOnBlocked, serveCmd.Flags().Lookup("status-on-blocked"))
+	err = viper.BindPFlag(core.OptStr_HttpStatusOnBlocked, serveCmd.Flags().Lookup("status-on-blocked"))
+	if err != nil {
+		panic(err)
+	}
 
 	rootCmd.AddCommand(serveCmd)
 }
