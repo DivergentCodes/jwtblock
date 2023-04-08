@@ -44,6 +44,6 @@ jobs:
 
       - if: github.ref_type == 'tag'
         name: Update pkg.go.dev records
-        run: go list -m "github.com/divergentcodes/jwt-block@${{ github.ref_name }}"
+        run: go list -m "github.com/divergentcodes/jwt-block\@${{ github.ref_name }}"
         env:
           GOPROXY: proxy.golang.org
