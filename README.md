@@ -13,12 +13,9 @@ It is a standalone binary that requires a Redis instance to store the blocklist.
 
 ## Installation
 
-Either download the [binary release](https://github.com/DivergentCodes/jwt-block/releases)
-or install the CLI as a Go module.
+Download the [binary release](https://github.com/DivergentCodes/jwt-block/releases) for your platform,
+and place it in the executable path.
 
-```
-go install github.com/divergentcodes/jwt-block@latest
-```
 
 ## Usage
 
