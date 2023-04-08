@@ -10,7 +10,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 
-	"divergent.codes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/internal/core"
 )
 
 var once sync.Once

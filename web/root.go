@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"divergent.codes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/internal/core"
 )
 
 // General error messages returned by the web service.

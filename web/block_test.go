@@ -13,7 +13,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jws"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 
-	"divergent.codes/jwt-block/internal/blocklist"
+	"github.com/divergentcodes/jwt-block/internal/blocklist"
 )
 
 func Test_Block_ValidTokenAndHash_Success(t *testing.T) {

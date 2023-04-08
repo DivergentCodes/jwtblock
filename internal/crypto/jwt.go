@@ -8,7 +8,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/spf13/viper"
 
-	"divergent.codes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/internal/core"
 )
 
 // General error messages from JWT utilities.

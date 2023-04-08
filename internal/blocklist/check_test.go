@@ -8,8 +8,8 @@ import (
 	"github.com/go-redis/redismock/v9"
 	"github.com/spf13/viper"
 
-	"divergent.codes/jwt-block/internal/core"
-	"divergent.codes/jwt-block/internal/crypto"
+	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/internal/crypto"
 )
 
 func Test_CheckByJwt_ValidToken_ExistsFound_Success(t *testing.T) {

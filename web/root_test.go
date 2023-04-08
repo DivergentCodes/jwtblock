@@ -4,7 +4,7 @@ import (
 	"github.com/alicebob/miniredis/v2"
 	"github.com/redis/go-redis/v9"
 
-	"divergent.codes/jwt-block/internal/cache"
+	"github.com/divergentcodes/jwt-block/internal/cache"
 )
 
 func setupMockRedis() {

@@ -7,7 +7,7 @@ import (
 	"context"
 	"errors"
 
-	"divergent.codes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/internal/core"
 )
 
 var (

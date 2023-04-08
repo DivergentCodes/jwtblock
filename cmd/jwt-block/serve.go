@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"divergent.codes/jwt-block/internal/core"
-	"divergent.codes/jwt-block/web"
+	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwt-block/web"
 )
 
 var (
