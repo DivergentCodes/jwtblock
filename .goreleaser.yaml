@@ -76,11 +76,14 @@ changelog:
     - title: Features
       regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
       order: 0
+    - title: 'Enhancements'
+      regexp: '^.*?enhance(\([[:word:]]+\))??!?:.+$'
+      order: 1
     - title: 'Bug fixes'
       regexp: '^.*?bug(\([[:word:]]+\))??!?:.+$'
-      order: 1
-    - title: Others
-      order: 999
+      order: 2
+    # - title: Others
+    #   order: 999
 
   # Exclude commit messages matching the listed regexp from the changelog.
   filters:
