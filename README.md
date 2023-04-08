@@ -1,7 +1,7 @@
 # JWT Block
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/divergentcodes/jwt-block.svg)](https://pkg.go.dev/github.com/divergentcodes/jwt-block)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/DivergentCodes/jwt-block/release.yaml?branch=main&style=flat-square)](https://github.com/DivergentCodes/jwt-block/actions?query=workflow%3Arelease)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/DivergentCodes/jwt-block/release.yaml?style=flat-square)](https://github.com/DivergentCodes/jwt-block/actions?query=workflow%3Arelease)
 
 A JWT blocklist using Go and Redis.
 
