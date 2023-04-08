@@ -41,3 +41,9 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: github.ref_type == 'tag'
+        name: Update pkg.go.dev records
+        run: go list -m "github.com/divergentcodes/jwt-block@${{ github.ref_name }}"
+        env:
+          GOPROXY: proxy.golang.org

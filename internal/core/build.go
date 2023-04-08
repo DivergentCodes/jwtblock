@@ -1,4 +1,3 @@
-// Package build contains compile-time variables and defaults, overridden by LDFLAGS during build.
 package core
 
 // Build-time variables set by LDFLAGS.
