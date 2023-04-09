@@ -29,6 +29,14 @@ builds:
       - '-X github.com/divergentcodes/jwt-block/internal/core.Date={{.Date}}'
       - '-X github.com/divergentcodes/jwt-block/internal/core.BuiltBy=goreleaser'
 
+dockers:
+  -
+    image_templates:
+      - "divergentcodes/{{.ProjectName}}:{{ .Tag }}"
+      - "divergentcodes/{{.ProjectName}}:v{{ .Major }}"
+      - "divergentcodes/{{.ProjectName}}:v{{ .Major }}.{{ .Minor }}"
+      - "divergentcodes/{{.ProjectName}}:latest"
+
 # Snapshots are one-off builds that can be ad hoc.
 # "git pull" fetches tags (used in versions) by default.
 snapshot:
