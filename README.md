@@ -16,6 +16,12 @@ It is a standalone binary that requires a Redis instance to store the blocklist.
 Download the [binary release](https://github.com/DivergentCodes/jwt-block/releases) for your platform,
 and place it in the executable path.
 
+JWT Block is also available as a Docker image.
+
+```
+docker run -it --rm divergentcodes/jwt-block:latest
+```
+
 
 ## Usage
 
