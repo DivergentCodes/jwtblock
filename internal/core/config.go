@@ -81,7 +81,7 @@ func initRedisDefaults() {
 	viper.SetDefault(OptStr_RedisDbnum, 0)
 	viper.SetDefault(OptStr_RedisUsername, "")
 	viper.SetDefault(OptStr_RedisPassword, "")
-	viper.SetDefault(OptStr_RedisTlsEnabled, true)
+	viper.SetDefault(OptStr_RedisTlsEnabled, false)
 	viper.SetDefault(OptStr_RedisTlsNoverify, false)
 }
 
