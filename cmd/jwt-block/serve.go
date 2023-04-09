@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/divergentcodes/jwt-block/internal/cache"
 	"github.com/divergentcodes/jwt-block/internal/core"
 	"github.com/divergentcodes/jwt-block/web"
 )
@@ -60,6 +61,10 @@ func init() {
 
 func serve(cmd *cobra.Command, args []string) {
 	ShowBanner()
+	_, err := cache.IsRedisReady()
+	if err != nil {
+		panic(err)
+	}
 
 	host := viper.GetString(core.OptStr_HttpHostname)
 	port := viper.GetInt(core.OptStr_HttpPort)
