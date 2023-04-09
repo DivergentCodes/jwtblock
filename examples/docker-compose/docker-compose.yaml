@@ -1,0 +1,25 @@
+# Example JWT Block setup using Docker Compose.
+#
+# Usage:
+#
+#   docker compose up
+#
+version: "3.9"
+
+services:
+
+  jwt-block:
+    image: "divergentcodes/jwt-block:latest"
+    ports:
+      - "8000:8000"
+    environment:
+      - JWTBLOCK_REDIS_HOST=cache
+    links:
+      - cache
+    depends_on:
+      - cache
+
+  cache:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
