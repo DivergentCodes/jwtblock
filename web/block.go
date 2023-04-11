@@ -30,6 +30,7 @@ func jwtBlock(w http.ResponseWriter, r *http.Request) {
 	}
 	logger.Debugw(
 		"Received value to add",
+		"func", "web.jwtBlock",
 		"jwt", payload.Jwt,
 		"sha256", payload.Sha256,
 	)
@@ -58,6 +59,7 @@ func jwtBlock(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Errorw(
 			"failed to JSON encode response data",
+			"func", "web.jwtBlock",
 			"data", result,
 			"error", err,
 		)
