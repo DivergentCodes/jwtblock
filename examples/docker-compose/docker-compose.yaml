@@ -1,8 +1,19 @@
 # Example JWT Block setup using Docker Compose.
 #
+# This example sets up a Nginx proxy in front of the httpbin web service.
+# The Nginx proxy defers to the JWT Block service for authentication decisions,
+# passing the user's JWT.
+#
+# When the Nginx proxy receives a request for the httpbin web service, it forwards
+# the request to the JWT Block service. The JWT Block service will parse, validate,
+# and verify the bearer token in the `Authorization` HTTP header, and return 200 on
+# allow or 401 on deny.
+#
 # Usage:
 #
 #   docker compose up
+#
+#   docker compose down
 #
 version: "3.9"
 
@@ -12,11 +23,12 @@ services:
   # The Nginx web proxy fronting other web services and deferring auth checks to JWT Block.
   nginx:
     container_name: nginx
-    #image: nginx:1.18
     image: nginx:latest
     ports:
       - 80:80/tcp
-    hostname: nginx
+    networks:
+      default: {}
+      webservices: {}
     volumes:
       - "./nginx.conf:/etc/nginx/conf.d/default.conf"
     depends_on:
@@ -27,18 +39,25 @@ services:
   # The web service being protected.
   httpbin:
     image: "kennethreitz/httpbin:latest"
-    ports:
-      - "8080:80"
+    # Uncomment to publicly expose ports on the machine.
+    # ports:
+    #   - "8080:80"
+    networks:
+      webservices: {}
 
 
   # The JWT Block auth service.
   jwt-block:
     image: "divergentcodes/jwt-block:latest"
-    ports:
-      - "4474:4474"
     environment:
       - JWTBLOCK_DEBUG=1
       - JWTBLOCK_REDIS_HOST=cache
+    # Uncomment to publicly expose ports on the machine.
+    # ports:
+    #   - "4474:4474"
+    networks:
+      webservices: {}
+      cache: {}
     links:
       - cache
     depends_on:
@@ -48,5 +67,12 @@ services:
   # The Redis cache holding the block list.
   cache:
     image: "redis:alpine"
-    ports:
-      - "6379:6379"
+    # Uncomment to publicly expose ports on the machine.
+    # ports:
+    #   - "6379:6379"
+    networks:
+      cache: {}
+
+networks:
+  webservices: {}
+  cache: {}
