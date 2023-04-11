@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 	"time"
 
 	"github.com/divergentcodes/jwt-block/internal/core"
@@ -13,8 +14,16 @@ import (
 
 // General error messages returned by the web service.
 var (
-	ErrHttpMethodOnlyPost  = errors.New("invalid HTTP method. Only POST is allowed")
-	ErrMissingInvalidToken = errors.New("missing or invalid token data in POST body")
+	ErrHttpMethodOnlyGet  = errors.New("invalid HTTP method. Only GET is allowed")
+	ErrHttpMethodOnlyPost = errors.New("invalid HTTP method. Only POST is allowed")
+
+	ErrMissingTokenHeader = errors.New("missing HTTP header with token")
+	ErrMissingHashHeader  = errors.New("missing HTTP header with hash")
+
+	ErrMissingInvalidToken = errors.New("missing or invalid token value in request")
+	ErrMissingInvalidHash  = errors.New("missing or invalid hash value in request")
+
+	ErrMalformedBearerTokenFormat = errors.New("malformed bearer token format")
 )
 
 // A JwtRequestBody is for passing a JWT *or* a hash  in an API request body.
@@ -44,6 +53,7 @@ func WriteSuccessResponse(w http.ResponseWriter, message string, httpStatus int)
 	if err != nil {
 		logger.Errorw(
 			"failed to JSON encode response data",
+			"func", "WriteSuccessResponse",
 			"data", data,
 		)
 	}
@@ -52,7 +62,6 @@ func WriteSuccessResponse(w http.ResponseWriter, message string, httpStatus int)
 // WriteErrorResponse writes a HTTP error response with a StandardResponse JSON body.
 func WriteErrorResponse(w http.ResponseWriter, errorMessage string, httpStatus int) {
 	logger := core.GetLogger()
-	logger.Errorw(errorMessage)
 
 	data := StandardResponse{
 		Message: errorMessage,
@@ -65,6 +74,7 @@ func WriteErrorResponse(w http.ResponseWriter, errorMessage string, httpStatus i
 	if err != nil {
 		logger.Errorw(
 			"failed to JSON encode response data",
+			"func", "WriteErrorResponse",
 			"data", data,
 		)
 	}
@@ -80,6 +90,7 @@ func HandleRequests(host string, port int) {
 
 	logger.Infow(
 		"Serving web API",
+		"func", "HandleRequests",
 		"host", host,
 		"port", port,
 	)
@@ -91,4 +102,16 @@ func HandleRequests(host string, port int) {
 	}
 
 	logger.Fatal(server.ListenAndServe())
+}
+
+// DebugLogIncomingRequest pretty prints the HTTP request to debug logging
+func DebugLogIncomingRequest(r *http.Request) {
+	logger := core.GetLogger()
+
+	prettyReq, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		logger.Debug(err.Error())
+	} else {
+		logger.Debug(string(prettyReq))
+	}
 }
