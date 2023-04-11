@@ -8,17 +8,44 @@ version: "3.9"
 
 services:
 
+
+  # The Nginx web proxy fronting other web services and deferring auth checks to JWT Block.
+  nginx:
+    container_name: nginx
+    #image: nginx:1.18
+    image: nginx:latest
+    ports:
+      - 80:80/tcp
+    hostname: nginx
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+    depends_on:
+      - jwt-block
+      - httpbin
+
+
+  # The web service being protected.
+  httpbin:
+    image: "kennethreitz/httpbin:latest"
+    ports:
+      - "8080:80"
+
+
+  # The JWT Block auth service.
   jwt-block:
     image: "divergentcodes/jwt-block:latest"
     ports:
-      - "8000:8000"
+      - "4474:4474"
     environment:
+      - JWTBLOCK_DEBUG=1
       - JWTBLOCK_REDIS_HOST=cache
     links:
       - cache
     depends_on:
       - cache
 
+
+  # The Redis cache holding the block list.
   cache:
     image: "redis:alpine"
     ports:
