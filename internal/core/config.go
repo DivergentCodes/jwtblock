@@ -96,7 +96,7 @@ var (
 
 func initHttpDefaults() {
 	viper.SetDefault(OptStr_HttpHostname, "")
-	viper.SetDefault(OptStr_HttpPort, 8000)
+	viper.SetDefault(OptStr_HttpPort, 4474)
 	viper.SetDefault(OptStr_HttpHeaderSha256, "x-jwtblock-sha256")
 	viper.SetDefault(OptStr_HttpStatusOnAllowed, 200)
 	viper.SetDefault(OptStr_HttpStatusOnBlocked, 401)
