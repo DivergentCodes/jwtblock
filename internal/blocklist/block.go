@@ -88,7 +88,11 @@ func BlockWithTTL(redisDB *redis.Client, tokenString string, explicitTTLSeconds 
 	} else {
 		// Use the default TTL.
 		ttl = ttlDefault
-		logger.Debugw("Set token TTL from default", "ttl", ttl.Seconds())
+		logger.Debugw(
+			"Set token TTL from default",
+			"func", "web.BlockWithTTL",
+			"ttl", ttl.Seconds(),
+		)
 	}
 
 	// Zero expiration means the key has no expiration time.
