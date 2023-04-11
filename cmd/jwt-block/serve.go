@@ -60,7 +60,18 @@ func init() {
 }
 
 func serve(cmd *cobra.Command, args []string) {
+	logger := core.GetLogger()
+
 	ShowBanner()
+
+	logger.Debugw(
+		"JWT parsing config",
+		"func", "cmd.serve",
+		core.OptStr_JwtParseEnabled, viper.GetBool(core.OptStr_JwtParseEnabled),
+		core.OptStr_JwtValidateEnabled, viper.GetBool(core.OptStr_JwtValidateEnabled),
+		core.OptStr_JwtVerifyEnabled, viper.GetBool(core.OptStr_JwtVerifyEnabled),
+	)
+
 	_, err := cache.IsRedisReady()
 	if err != nil {
 		panic(err)
