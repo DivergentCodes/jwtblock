@@ -30,10 +30,11 @@ services:
       default: {}
       webservices: {}
     volumes:
-      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./ui-app:/usr/share/nginx/ui-app"
     depends_on:
-      - jwt-block
       - httpbin
+      - jwtblock
 
 
   # The web service being protected.
@@ -45,9 +46,8 @@ services:
     networks:
       webservices: {}
 
-
   # The JWT Block auth service.
-  jwt-block:
+  jwtblock:
     image: "divergentcodes/jwt-block:latest"
     environment:
       - JWTBLOCK_DEBUG=1

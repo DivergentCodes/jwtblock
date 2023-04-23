@@ -1,0 +1,6 @@
+{
+  "clientId":          "",
+  "authorizeEndpoint": "",
+  "tokenEndpoint":     "",
+  "protectedEndpoint": ""
+}
