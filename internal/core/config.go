@@ -87,11 +87,13 @@ func initRedisDefaults() {
 
 // HTTP service configuration options
 var (
-	OptStr_HttpHostname        = "http.hostname"
-	OptStr_HttpPort            = "http.port"
-	OptStr_HttpHeaderSha256    = "http.http_header_sha256"
-	OptStr_HttpStatusOnAllowed = "http.status_on_allowed"
-	OptStr_HttpStatusOnBlocked = "http.status_on_blocked"
+	OptStr_HttpHostname           = "http.hostname"
+	OptStr_HttpPort               = "http.port"
+	OptStr_HttpHeaderSha256       = "http.http_header.sha256"
+	OptStr_HttpStatusOnAllowed    = "http.status.on_allowed"
+	OptStr_HttpStatusOnBlocked    = "http.status.on_blocked"
+	OptStr_HttpCorsAllowedOrigins = "http.cors.allowed_origins"
+	OptStr_HttpCorsMaxSeconds     = "http.cors.max_seconds"
 )
 
 func initHttpDefaults() {
@@ -100,6 +102,8 @@ func initHttpDefaults() {
 	viper.SetDefault(OptStr_HttpHeaderSha256, "x-jwtblock-sha256")
 	viper.SetDefault(OptStr_HttpStatusOnAllowed, 200)
 	viper.SetDefault(OptStr_HttpStatusOnBlocked, 401)
+	viper.SetDefault(OptStr_HttpCorsAllowedOrigins, "")
+	viper.SetDefault(OptStr_HttpCorsMaxSeconds, 5)
 }
 
 func initConfigFile() {
