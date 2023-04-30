@@ -67,9 +67,12 @@ func serve(cmd *cobra.Command, args []string) {
 	logger.Debugw(
 		"JWT parsing config",
 		"func", "cmd.serve",
+
 		core.OptStr_JwtParseEnabled, viper.GetBool(core.OptStr_JwtParseEnabled),
 		core.OptStr_JwtValidateEnabled, viper.GetBool(core.OptStr_JwtValidateEnabled),
 		core.OptStr_JwtVerifyEnabled, viper.GetBool(core.OptStr_JwtVerifyEnabled),
+
+		core.OptStr_HttpCorsAllowedOrigins, viper.GetStringSlice(core.OptStr_HttpCorsAllowedOrigins),
 	)
 
 	_, err := cache.IsRedisReady()
