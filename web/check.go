@@ -22,9 +22,15 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 	httpStatusAllow := viper.GetInt(core.OptStr_HttpStatusOnAllowed)
 	httpStatusDeny := viper.GetInt(core.OptStr_HttpStatusOnBlocked)
 
-	// Check HTTP method.
+	// Handle CORS preflight requests.
+	if r.Method == http.MethodOptions {
+		WriteCorsPreflightResponse(r, w)
+		return
+	}
+
+	// Only allow GET.
 	if r.Method != http.MethodGet {
-		WriteErrorResponse(w, ErrHttpMethodOnlyGet.Error(), http.StatusMethodNotAllowed)
+		WriteErrorResponse(r, w, ErrHttpMethodOnlyGet.Error(), http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -45,7 +51,7 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			"hashError", hashErr.Error(),
 		)
 		DebugLogIncomingRequest(r)
-		WriteErrorResponse(w, msg, httpStatusDeny)
+		WriteErrorResponse(r, w, msg, httpStatusDeny)
 		return
 	}
 
@@ -82,15 +88,19 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			)
 			err = blocklist.ErrMisconfiguredCache
 			httpStatus := http.StatusInternalServerError
-			WriteErrorResponse(w, err.Error(), httpStatus)
+			WriteErrorResponse(r, w, err.Error(), httpStatus)
 		} else {
 			// Operational error.
-			WriteErrorResponse(w, err.Error(), httpStatusDeny)
+			WriteErrorResponse(r, w, err.Error(), httpStatusDeny)
 		}
 		return
 	}
 
 	// Valid response.
+	allowed, allowedOrigin := isCorsRequestAllowed(r)
+	if allowed {
+		addCorsResponseHeaders(w, allowedOrigin)
+	}
 	w.Header().Set("Content-Type", "application/json")
 	if result.IsBlocked {
 		w.WriteHeader(httpStatusDeny)
@@ -112,44 +122,4 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			"data", result,
 		)
 	}
-}
-
-func parseTokenFromHeader(r *http.Request) (string, error) {
-	var tokenString string
-
-	// Get the header with the bearer token.
-	tokenHeaderValueList, ok := r.Header["Authorization"]
-	if !ok {
-		return tokenString, ErrMissingTokenHeader
-	}
-
-	// Extract the bearer token value.
-	tokenHeaderValue := tokenHeaderValueList[len(tokenHeaderValueList)-1]
-	substrings := strings.Split(tokenHeaderValue, " ")
-	if len(substrings) != 2 {
-		return tokenString, ErrMalformedBearerTokenFormat
-	}
-
-	tokenString = substrings[1]
-	if tokenString == "" {
-		return tokenString, ErrMissingInvalidToken
-	}
-	return tokenString, nil
-}
-
-func parseHashFromHeader(r *http.Request) (string, error) {
-	var hashString string
-
-	// Get the header with the hash.
-	hashHeaderName := http.CanonicalHeaderKey(viper.GetString(core.OptStr_HttpHeaderSha256))
-	hashHeaderValueList, ok := r.Header[hashHeaderName]
-	if !ok {
-		return hashString, ErrMissingTokenHeader
-	}
-
-	hashString = hashHeaderValueList[len(hashHeaderValueList)-1]
-	if hashString == "" {
-		return hashString, ErrMissingInvalidHash
-	}
-	return hashString, nil
 }
