@@ -1,10 +1,12 @@
 FROM golang:alpine AS builder
+# Where to find the local built jwt-block binary.
+ARG SRC_BIN_DIR="."
 # Create an unprivileged user.
 RUN adduser --system --no-create-home app
 # Create an unprivileged runtime location with the binary.
 RUN mkdir /app
 # Copy the Golang binary.
-COPY jwt-block /app/jwt-block
+COPY ${SRC_BIN_DIR}/jwt-block /app/jwt-block
 RUN chown -R app /app
 
 
