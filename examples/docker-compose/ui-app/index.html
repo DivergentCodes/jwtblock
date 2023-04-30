@@ -10,20 +10,18 @@
 
     <h2> OIDC Identity Provider (IdP) Configuration </h2>
     <section>
-        <button id="btnSaveOIDC" onclick="saveOidcConfig()">Save OIDC</button>
-        <button id="btnResetOIDC" onclick="initConfig()">Reset Config</button>
+        <button id="btnLogin" onclick="oidcLogin_initAuthCodeFlow()">Login</button>
         <br/> <br/>
 
-        <form id="formOIDC" onsubmit="saveOidcConfig()" action="">
-            <label for="txtAuthorizationEndpoint">Authorization Endpoint:</label>
-            <input id="txtAuthorizationEndpoint" name="txtAuthorizationEndpoint" type="text"><br><br>
+        <label for="txtAuthorizationEndpoint">Authorization Endpoint:</label>
+        <p id="txtAuthorizationEndpoint" name="txtAuthorizationEndpoint"></p>
 
-            <label for="txtTokenEndpoint">Token Endpoint:</label>
-            <input id="txtTokenEndpoint" name="txtTokenEndpoint" type="text"><br><br>
+        <label for="txtTokenEndpoint">Token Endpoint:</label>
+        <p id="txtTokenEndpoint" name="txtTokenEndpoint"></p>
 
-            <label for="txtClientId">Client ID:</label>
-            <input id="txtClientId" name="txtClientId" type="text"><br><br>
-        </form>
+        <label for="txtClientId">Client ID:</label>
+        <p id="txtClientId" name="txtClientId"></p>
+
     </section>
 
 
@@ -35,16 +33,28 @@
         <label for="txtProtectedEndpoint">Protected Endpoint:</label>
         <p id="txtProtectedEndpoint" name="txtProtectedEndpoint"></p>
 
-        <label for="txtResponseStatus">Response Status:</label>
-        <p id="txtResponseStatus" name="txtResponseStatus"></p>
+        <label for="txtApiResponseStatus">Response Status:</label>
+        <p id="txtApiResponseStatus" name="txtApiResponseStatus"></p>
+
+    </section>
+
+
+    <h2> Logout (block JWT)</h2>
+    <section>
+        <button id="btnLogout" onclick="oidcLogout()">Logout</button>
+        <br/>
+
+        <label for="txtLogoutEndpoint">Logout Endpoint:</label>
+        <p id="txtLogoutEndpoint" name="txtLogoutEndpoint"></p>
+
+        <label for="txtBlockResponseStatus">Response Status:</label>
+        <p id="txtBlockResponseStatus" name="txtBlockResponseStatus"></p>
 
     </section>
 
 
     <h2> Tokens </h2>
     <section>
-        <button id="btnLogin" onclick="oidcLogin_initAuthCodeFlow()">Login</button>
-        <button id="btnLogout" onclick="oidcLogout()">Logout</button>
         <button id="btnReset" onclick="resetAppState()">Clear State</button>
         <br/> <br/>
 
@@ -71,18 +81,25 @@
  * Initial request handling.
  ******************************************************************************/
 
-// Reset configuration values in the form.
+// Initialize configuration values from `/config.json`.
 function initConfig() {
     fetch("config.json")
         .then(response => response.json())
         .then(data => {
-            document.getElementById("txtClientId").value = data.clientId;
-            document.getElementById("txtAuthorizationEndpoint").value = data.authorizeEndpoint;
-            document.getElementById("txtTokenEndpoint").value = data.tokenEndpoint;
-            saveOidcConfig();
+            localStorage.setItem("client_id", data.clientId);
+            document.getElementById("txtClientId").innerText = data.clientId;
+
+            localStorage.setItem("authorization_endpoint", data.authorizeEndpoint);
+            document.getElementById("txtAuthorizationEndpoint").innerText = data.authorizeEndpoint;
+
+            localStorage.setItem("token_endpoint", data.tokenEndpoint);
+            document.getElementById("txtTokenEndpoint").innerText = data.tokenEndpoint;
 
             localStorage.setItem("protected_endpoint", data.protectedEndpoint);
-            document.getElementById("txtProtectedEndpoint").innerHTML = data.protectedEndpoint;
+            document.getElementById("txtProtectedEndpoint").innerText = data.protectedEndpoint;
+
+            localStorage.setItem("logout_endpoint", data.logoutEndpoint);
+            document.getElementById("txtLogoutEndpoint").innerText = data.logoutEndpoint;
         });
 }
 
@@ -138,16 +155,16 @@ var oidcAuthParams = {
     responseType: "code",
     // Signal to use OIDC, include email address, and use refresh tokens.
     // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    //scope: "openid email",
-    //scope: "openid profile email",
     scope: "openid profile email offline_access",
     // After successful login, have the IdP redirect back to this app with the auth code.
     redirectUri: `${document.location.origin}/#/oauth/callback`,
     // Random state.
+    // Set dynamically at runtime, with value in localstorage.
     // Could also be a URL path or params to append with JS.
     state: "",
     // S256 mode.
     codeChallengeMethod: "S256",
+    // Set dynamically at runtime, with value in localstorage.
     codeChallenge: "",
 }
 
@@ -162,56 +179,11 @@ var oidcTokenParams = {
     code: "",
 }
 
-function initOidcConfig() {
-    fetch("config.json")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("txtClientId").value = data.clientId;
-            document.getElementById("txtAuthorizationEndpoint").value = data.authorizeEndpoint;
-            document.getElementById("txtTokenEndpoint").value = data.tokenEndpoint;
-            saveOidcConfig();
-        });
-}
-
-// Load OIDC configuration values into the form from default or localstorage.
-function loadOidcConfig() {
-    let authorizeEndpoint = localStorage.getItem("authorization_endpoint");
-    document.getElementById("txtAuthorizationEndpoint").value = authorizeEndpoint;
-
-    let tokenEndpoint = localStorage.getItem("token_endpoint");
-    document.getElementById("txtTokenEndpoint").value = tokenEndpoint;
-
-    let clientId = localStorage.getItem("client_id");
-    document.getElementById("txtClientId").value = clientId;
-}
-
-// Save OIDC configuration values from the form to localstorage.
-function saveOidcConfig() {
-    let authorizeEndpoint = document.getElementById("txtAuthorizationEndpoint").value;
-    localStorage.setItem("authorization_endpoint", authorizeEndpoint);
-
-    let tokenEndpoint = document.getElementById("txtTokenEndpoint").value;
-    localStorage.setItem("token_endpoint", tokenEndpoint);
-
-    let clientId = document.getElementById("txtClientId").value;
-    localStorage.setItem("client_id", clientId);
-}
-
-
 /*******************************************************************************
  * API data functions.
  ******************************************************************************/
 
-// Reset configuration values in the form.
-function initApiConfig() {
-    fetch("config.json")
-        .then(response => response.json())
-        .then(data => {
-            localStorage.setItem("protected_endpoint", data.protectedEndpoint);
-            document.getElementById("txtProtectedEndpoint").innerHTML = data.protectedEndpoint;
-        });
-}
-
+// Issue HTTP request to the protected API.
 function callProtectedApi() {
     let protectedEndpoint = localStorage.getItem("protected_endpoint");
     let accessToken = localStorage.getItem("access_token");
@@ -227,12 +199,11 @@ function callProtectedApi() {
         mode: "cors",
     }
 
-
+    // Issue request.
     fetch(protectedEndpoint, requestParams)
         .then(response => {
             console.log(response);
-            document.getElementById("txtResponseStatus").innerHTML = response.status;
-            //return response.json();
+            document.getElementById("txtApiResponseStatus").innerHTML = response.status;
         })
  }
 
@@ -320,6 +291,7 @@ function oidcLogin_callbackCodeTokenExchange() {
             "Content-Type": "application/json",
         },
         cache: "no-cache",
+        mode: "cors",
         body: JSON.stringify(requestBody),
     }
 
@@ -343,7 +315,29 @@ function oidcLogin_callbackCodeTokenExchange() {
 function oidcLogout() {
     console.log("Handling logout");
 
-    localStorage.setItem("authenticated", false);
+    let accessToken = localStorage.getItem("access_token");
+    let logoutEndpoint = localStorage.getItem("logout_endpoint");
+    let logoutUrl = new URL(logoutEndpoint);
+
+    // Assemble the request configuration.
+    let requestParams = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        cache: "no-cache",
+        mode: "cors"
+    }
+
+    // Issue the POST request, set the token in localStorage, and redirect home.
+    let fetchPromise = fetch(logoutUrl.href, requestParams)
+        .then(response => {
+            console.log(response);
+            document.getElementById("txtBlockResponseStatus").innerHTML = response.status;
+            localStorage.setItem("authenticated", false);
+            uiRedirect("");
+        });
 }
 
 
@@ -375,10 +369,6 @@ function uiRedirect(hashPath = "") {
 
 // Adjust elements based on state.
 function updatePage() {
-
-    // Set the OIDC config.
-    console.log("Loading OIDC Config")
-    loadOidcConfig();
 
     // Adjust login/logout nav items.
     if (localStorage.getItem("authenticated")) {
@@ -460,12 +450,6 @@ document.addEventListener("DOMContentLoaded", (event) => {handleRequest(event)},
 
 // Trigger request handler when front end fragment route changes due to user interaction.
 window.addEventListener("hashchange", (event) => {handleRequest(event)}, false);
-
-// Prevent form navigation.
-document.getElementById("formOIDC").addEventListener('submit', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-});
 
 </script>
 
