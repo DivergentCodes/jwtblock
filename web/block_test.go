@@ -3,6 +3,7 @@ package web
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http/httptest"
 	"testing"
@@ -22,13 +23,11 @@ func Test_Block_ValidTokenAndHash_Success(t *testing.T) {
 	httpMethod := "POST"
 	urlPath := "/blocklist/block"
 	tokenString := generateTokenStringHS256(30)
-
-	// Request payload creation.
-	payloadJSON, _ := json.Marshal(map[string]string{"jwt": tokenString})
-	payloadBytes := bytes.NewBuffer(payloadJSON)
+	bearerTokenString := fmt.Sprintf("Bearer %s", tokenString)
 
 	// Build the request.
-	request := httptest.NewRequest(httpMethod, urlPath, payloadBytes)
+	request := httptest.NewRequest(httpMethod, urlPath, nil)
+	request.Header.Add("Authorization", bearerTokenString)
 	w := httptest.NewRecorder()
 
 	// Issue HTTP request to handler.
@@ -61,10 +60,8 @@ func Test_Block_ValidTokenAndHash_Success(t *testing.T) {
 	}
 
 	// Issue a second HTTP request to handler to verify duplicate behavior.
-	payloadJSON2, _ := json.Marshal(map[string]string{"jwt": tokenString})
-	payloadBytes2 := bytes.NewBuffer(payloadJSON2)
-
-	request2 := httptest.NewRequest(httpMethod, urlPath, payloadBytes2)
+	request2 := httptest.NewRequest(httpMethod, urlPath, nil)
+	request2.Header.Add("Authorization", bearerTokenString)
 	w2 := httptest.NewRecorder()
 	jwtBlock(w2, request2)
 
@@ -122,20 +119,12 @@ func Test_Block_MissingToken_Error(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected request to pass: err=%s", err)
 	}
-	expectedStatus := 400
+	expectedStatus := 401
 	if response.StatusCode != expectedStatus {
 		t.Errorf(
 			"Unexpected status code: actual=%d, expected=%d",
 			response.StatusCode,
 			expectedStatus,
-		)
-	}
-	if !result.IsError || result.Message != ErrMissingInvalidToken.Error() {
-		t.Errorf(
-			"Expected ErrMissingInvalidToken: status=%d, message='%s', error=%t\n",
-			response.StatusCode,
-			result.Message,
-			result.IsError,
 		)
 	}
 
@@ -168,20 +157,12 @@ func Test_Block_MalformedToken_Error(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected request to pass: err=%s", err)
 	}
-	expectedStatus := 400
+	expectedStatus := 401
 	if response.StatusCode != expectedStatus {
 		t.Errorf(
 			"Unexpected status code: actual=%d, expected=%d",
 			response.StatusCode,
 			expectedStatus,
-		)
-	}
-	if !result.IsError || result.Message != jwt.ErrInvalidJWT().Error() {
-		t.Errorf(
-			"Expected ErrMissingInvalidToken: status=%d, message='%s', error=%t\n",
-			response.StatusCode,
-			result.Message,
-			result.IsError,
 		)
 	}
 
@@ -194,13 +175,11 @@ func Test_Block_InvalidHttpMethod_Error(t *testing.T) {
 	httpMethod := "PUT"
 	urlPath := "/blocklist/block"
 	tokenString := generateTokenStringHS256(30)
-
-	// Request payload creation.
-	payloadJSON, _ := json.Marshal(map[string]string{"jwt": tokenString})
-	payloadBytes := bytes.NewBuffer(payloadJSON)
+	bearerTokenString := fmt.Sprintf("Bearer %s", tokenString)
 
 	// Build the request.
-	request := httptest.NewRequest(httpMethod, urlPath, payloadBytes)
+	request := httptest.NewRequest(httpMethod, urlPath, nil)
+	request.Header.Add("Authorization", bearerTokenString)
 	w := httptest.NewRecorder()
 
 	// Issue HTTP request to handler.
