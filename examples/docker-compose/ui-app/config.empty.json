@@ -1,7 +1,0 @@
-{
-  "clientId":          "",
-  "authorizeEndpoint": "",
-  "tokenEndpoint":     "",
-  "protectedEndpoint": "",
-  "logoutEndpoint":    ""
-}

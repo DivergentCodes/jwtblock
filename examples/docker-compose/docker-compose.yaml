@@ -34,6 +34,7 @@ services:
       - "./ui-app:/usr/share/nginx/ui-app"
     depends_on:
       - httpbin
+      - keycloak
       - jwtblock
 
 
@@ -46,6 +47,40 @@ services:
     networks:
       webservices: {}
 
+
+  # The Keycloak identity provider handling login and logout.
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev --import-realm --health-enabled=true
+    volumes:
+      # https://simonscholz.github.io/tutorials/keycloak-realm-export-import
+      - ./keycloak/realms:/opt/keycloak/data/import
+    environment:
+      KEYCLOAK_LOGLEVEL: DEBUG
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+    ports:
+      - 8080:8080/tcp
+    networks:
+      webservices: {}
+
+
+  # Unfortunately required as a workaround, because Keycloak
+  # cannot directly import users on startup at this time.
+  # This just runs a script to create the user via REST API.
+  keycloak_user_setup:
+    image: nginx:latest
+    networks:
+      default: {}
+      webservices: {}
+    volumes:
+      - "./keycloak/users:/tmp/users"
+    entrypoint: /tmp/users/create-user.sh
+    depends_on:
+      - keycloak
+
+
   # The JWT Block auth service.
   jwtblock:
     image: "divergentcodes/jwt-block:local"
@@ -57,7 +92,7 @@ services:
     environment:
       - JWTBLOCK_DEBUG=1
       - JWTBLOCK_REDIS_HOST=cache
-      - JWTBLOCK_HTTP_CORS_ALLOWED_ORIGINS=http://ui-app.local
+      - JWTBLOCK_HTTP_CORS_ALLOWED_ORIGINS=http://ui-app.localhost
     # Uncomment to publicly expose ports on the machine.
     # ports:
     #   - "4474:4474"
@@ -78,6 +113,7 @@ services:
     #   - "6379:6379"
     networks:
       cache: {}
+
 
 networks:
   webservices: {}

@@ -13,14 +13,17 @@
         <button id="btnLogin" onclick="oidcLogin_initAuthCodeFlow()">Login</button>
         <br/> <br/>
 
+        <label for="txtClientId">Client ID:</label>
+        <p id="txtClientId" name="txtClientId"></p>
+
         <label for="txtAuthorizationEndpoint">Authorization Endpoint:</label>
         <p id="txtAuthorizationEndpoint" name="txtAuthorizationEndpoint"></p>
 
+        <label for="txtCallbackEndpoint">Callback Endpoint:</label>
+        <p id="txtCallbackEndpoint" name="txtCallbackEndpoint"></p>
+
         <label for="txtTokenEndpoint">Token Endpoint:</label>
         <p id="txtTokenEndpoint" name="txtTokenEndpoint"></p>
-
-        <label for="txtClientId">Client ID:</label>
-        <p id="txtClientId" name="txtClientId"></p>
 
     </section>
 
@@ -58,9 +61,6 @@
         <button id="btnReset" onclick="resetAppState()">Clear State</button>
         <br/> <br/>
 
-        <h3>Refresh Token</h3>
-        <code id="codeRefreshToken"></code>
-
         <h3>Access Token (Decoded)</h3>
         <pre> <code id="codeAccessTokenDecoded"></code> </pre>
 
@@ -72,6 +72,9 @@
 
         <h3>ID Token</h3>
         <code id="codeIdToken"></code>
+
+        <h3>Refresh Token</h3>
+        <code id="codeRefreshToken"></code>
 
     </section>
 <script>
@@ -91,6 +94,9 @@ function initConfig() {
 
             localStorage.setItem("authorization_endpoint", data.authorizeEndpoint);
             document.getElementById("txtAuthorizationEndpoint").innerText = data.authorizeEndpoint;
+
+            localStorage.setItem("callback_endpoint", data.callbackEndpoint);
+            document.getElementById("txtCallbackEndpoint").innerText = data.callbackEndpoint;
 
             localStorage.setItem("token_endpoint", data.tokenEndpoint);
             document.getElementById("txtTokenEndpoint").innerText = data.tokenEndpoint;
@@ -134,7 +140,7 @@ function handleRequest(event) {
     }
 
     // Handle the route.
-    if (newUrl.hash === "#/oauth/callback") {
+    if ((document.location.pathname === "/oauth2/callback") || (newUrl.hash === "#/oauth2/callback")) {
         // Browser page request was triggered by IdP,
         // giving this page a code to exchange for an auth token.
         oidcLogin_callbackCodeTokenExchange();
@@ -157,7 +163,7 @@ var oidcAuthParams = {
     // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
     scope: "openid profile email offline_access",
     // After successful login, have the IdP redirect back to this app with the auth code.
-    redirectUri: `${document.location.origin}/#/oauth/callback`,
+    redirectUri: `${document.location.origin}/oauth2/callback`,
     // Random state.
     // Set dynamically at runtime, with value in localstorage.
     // Could also be a URL path or params to append with JS.
@@ -204,6 +210,8 @@ function callProtectedApi() {
         .then(response => {
             console.log(response);
             document.getElementById("txtApiResponseStatus").innerHTML = response.status;
+        }).catch( err => {
+            console.log("Error fetching protected API:", err)
         })
  }
 
@@ -242,7 +250,6 @@ function oidcLogin_initAuthCodeFlow() {
     loginRequest.searchParams.append("response_type", oidcAuthParams.responseType);
     loginRequest.searchParams.append("scope", oidcAuthParams.scope);
     loginRequest.searchParams.append("client_id", clientId);
-    loginRequest.searchParams.append("audience", oidcAuthParams.audience);
     loginRequest.searchParams.append("redirect_uri", oidcAuthParams.redirectUri);
     loginRequest.searchParams.append("state", oidcAuthParams.state);
     loginRequest.searchParams.append("code_challenge_method", oidcAuthParams.codeChallengeMethod);
@@ -255,59 +262,40 @@ function oidcLogin_initAuthCodeFlow() {
 
 // Check if browser page request was triggered by IdP, sending an auth code.
 function oidcLogin_callbackCodeTokenExchange() {
-    console.log("Handling OIDC callback route, receiving auth code to exchange for token")
+    try {
+        console.log("Handling OIDC callback route, receiving auth code to exchange for token")
 
-    const callbackParams = new URLSearchParams(document.location.search);
-    let code = callbackParams.get("code");
-    if (!code) {
-        console.log("Missing OIDC 'code' parameter");
-        return;
+        const callbackParams = new URLSearchParams(document.location.search);
+        let code = callbackParams.get("code");
+        if (!code) {
+            console.log("Missing OIDC 'code' parameter");
+            return;
+        }
+
+        // Get saved and dynamic runtime parameter values.
+        let clientId = localStorage.getItem("client_id");
+        let tokenEndpoint = localStorage.getItem("token_endpoint");
+
+        oidcTokenParams.codeVerifier = localStorage.getItem("oidc_code_verifier");
+        console.log("Code verifier: ", oidcTokenParams.codeVerifier);
+
+        oidcTokenParams.code = code;
+        console.log("Auth code: ", oidcTokenParams.code);
+
+        // Construct request.
+        let tokenExchangeRequest = new URL(tokenEndpoint);
+        let requestBody = {
+            "client_id": clientId,
+            "grant_type": oidcTokenParams.grantType,
+            "redirect_uri": oidcTokenParams.redirectUri,
+            "code_verifier": oidcTokenParams.codeVerifier,
+            "code": oidcTokenParams.code,
+        }
+
+    } catch(errorOuter) {
+        console.log("oidcLogin_callbackCodeTokenExchange Caught outer error fetching tokens:", errorOuter)
+
     }
-
-    // Get saved and dynamic runtime parameter values.
-    let clientId = localStorage.getItem("client_id");
-    let tokenEndpoint = localStorage.getItem("token_endpoint");
-
-    oidcTokenParams.codeVerifier = localStorage.getItem("oidc_code_verifier");
-    console.log("Code verifier: ", oidcTokenParams.codeVerifier);
-
-    oidcTokenParams.code = code;
-    console.log("Auth code: ", oidcTokenParams.code);
-
-    // Construct request.
-    let tokenExchangeRequest = new URL(tokenEndpoint);
-    let requestBody = {
-        "client_id": clientId,
-        "grant_type": oidcTokenParams.grantType,
-        "redirect_uri": oidcTokenParams.redirectUri,
-        "code_verifier": oidcTokenParams.codeVerifier,
-        "code": oidcTokenParams.code,
-    }
-
-    // Assemble the request configuration.
-    let requestParams = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        cache: "no-cache",
-        mode: "cors",
-        body: JSON.stringify(requestBody),
-    }
-
-    // Issue the POST request, set the token in localStorage, and redirect home.
-    let fetchPromise = fetch(tokenExchangeRequest.href, requestParams)
-        .then(resp => resp.json())
-        .then(data => {
-            if (data.access_token) { localStorage.setItem("access_token", data.access_token); }
-            if (data.id_token) { localStorage.setItem("id_token", data.id_token); }
-            if (data.expires_in) { localStorage.setItem("expires_in", data.expires_in); }
-            if (data.refresh_token) { localStorage.setItem("refresh_token", data.refresh_token); }
-        })
-        .then(() => {
-            localStorage.setItem("authenticated", true);
-            uiRedirect("");
-        });
 }
 
 
@@ -330,13 +318,14 @@ function oidcLogout() {
         mode: "cors"
     }
 
-    // Issue the POST request, set the token in localStorage, and redirect home.
+    // Issue the POST request.
     let fetchPromise = fetch(logoutUrl.href, requestParams)
         .then(response => {
             console.log(response);
             document.getElementById("txtBlockResponseStatus").innerHTML = response.status;
             localStorage.setItem("authenticated", false);
-            uiRedirect("");
+        }).catch( err => {
+            console.log("Error fetching logout:", err)
         });
 }
 
@@ -349,8 +338,7 @@ function resetAppState() {
     sessionStorage.clear();
 
     initConfig();
-
-    uiRedirect("");
+    updatePage();
 }
 
 /*******************************************************************************
@@ -369,15 +357,6 @@ function uiRedirect(hashPath = "") {
 
 // Adjust elements based on state.
 function updatePage() {
-
-    // Adjust login/logout nav items.
-    if (localStorage.getItem("authenticated")) {
-        document.getElementById("btnLogin").disabled = true;
-        document.getElementById("btnLogout").disabled = false;
-    } else {
-        document.getElementById("btnLogin").disabled = false;
-        document.getElementById("btnLogout").disabled = true;
-    }
 
     // Display refresh token, if present.
     let refreshToken = localStorage.getItem("refresh_token");
@@ -464,7 +443,7 @@ section {
   word-wrap: break-word;
   border: solid;
   padding: 10px;
-  width: 620px;
+  width: 720px;
 }
 
 label {
@@ -474,12 +453,12 @@ label {
 
 p {
   display: inline-block;
-  width: 350px;
+  width: 450px;
 }
 
 input[type="text"] {
   display: inline-block;
-  width: 350px;
+  width: 450px;
 }
 
 </style>
