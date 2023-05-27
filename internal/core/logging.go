@@ -18,8 +18,7 @@ func initZapLogger() *zap.SugaredLogger {
 		"level": "debug",
 		"encoding": "json",
 		"outputPaths": [
-			"stdout",
-			"/tmp/logs"
+			"stdout"
 		],
 		"errorOutputPaths": [
 			"stderr"
@@ -37,7 +36,7 @@ func initZapLogger() *zap.SugaredLogger {
 		"level": "info",
 		"encoding": "json",
 		"outputPaths": [
-			"/tmp/logs"
+			"stdout"
 		],
 		"errorOutputPaths": [
 			"stderr"

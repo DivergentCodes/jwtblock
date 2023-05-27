@@ -1,0 +1,21 @@
+{
+    "username":"alice",
+    "firstName": "Alice",
+    "lastName": "",
+    "email": "alice@demo.localhost",
+    "emailVerified": true,
+    "credentials": [
+        {
+            "type" : "password",
+            "hashedSaltedValue" : "BQZFrqCqlm2+TChYv0ison8IOHBSSufaeEisHVA1f7yhqzZ1EtrxqO1UQZgadKamI6v06roxqgAN+O/SZd2oIw==",
+            "salt" : "sl4mXx6T9FypPH/s9TngfQ==",
+            "hashIterations" : 27500,
+            "counter" : 0,
+            "algorithm" : "pbkdf2-sha256",
+            "digits" : 0,
+            "period" : 0,
+            "config" : { }
+        }
+    ],
+    "enabled":"true"
+}

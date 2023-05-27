@@ -61,3 +61,14 @@ func GetRedisClient() *redis.Client {
 func SetRedisClient(rc *redis.Client) {
 	redisClient = rc
 }
+
+// Verify that the Redis cache can be interacted with.
+func IsRedisReady() (bool, error) {
+	redisContext = context.TODO()
+	redisDB := GetRedisClient()
+	_, err := redisDB.DBSize(redisContext).Result()
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

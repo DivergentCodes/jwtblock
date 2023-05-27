@@ -20,6 +20,8 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    # The Github Actions environment (with variables and secrets) to use.
+    environment: release
     steps:
 
       - name: Checkout repository
@@ -42,8 +44,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: github.ref_type == 'tag'
-        name: Update pkg.go.dev records
+      - name: Update pkg.go.dev records
+        if: github.ref_type == 'tag'
         run: go list -m "github.com/divergentcodes/jwt-block@${{ github.ref_name }}"
         env:
           GOPROXY: proxy.golang.org
+
+      - name: Push Docker image
+        run: make docker-push
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_API_KEY: ${{ secrets.DOCKER_API_KEY }}
+

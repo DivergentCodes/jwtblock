@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <title>Demo OIDC UI App Callback</title>
+</head>
+
+<body id="body">
+
+    <h1> Demo OIDC UI App Callback </h1>
+
+<script>
+
+function main(event) {
+
+    console.log("Callback: receiving auth code that can be exchanged for a token");
+
+    try {
+        // Callback and token endpoint.
+        let callbackEndpoint = localStorage.getItem("callback_endpoint");
+        let tokenEndpoint = localStorage.getItem("token_endpoint");
+        console.log("Callback URL: ", callbackEndpoint);
+        console.log("Token URL: ", tokenEndpoint);
+
+        // Client ID.
+        let clientId = localStorage.getItem("client_id");
+
+        // Auth code.
+        const callbackParams = new URLSearchParams(document.location.search);
+        let code = callbackParams.get("code");
+        if (!code) {
+            console.log("Missing OIDC 'code' parameter");
+            return;
+        }
+        console.log("Auth code: ", code);
+
+        // Code verifier.
+        codeVerifier = localStorage.getItem("oidc_code_verifier");
+        console.log("Code verifier: ", codeVerifier);
+
+        // Request to token endpoint must be 'application/x-www-form-urlencoded' (Cognito)
+        fetch(tokenEndpoint, {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                "client_id": clientId,
+                "grant_type": "authorization_code",
+                "redirect_uri": callbackEndpoint,
+                "code_verifier": codeVerifier,
+                "code": code,
+            })
+        }).then(response => response.json())
+        .then(data =>{
+            console.log("Token endpoint response data...")
+            console.log(data)
+
+            if (data.access_token) { localStorage.setItem("access_token", data.access_token); }
+            if (data.id_token) { localStorage.setItem("id_token", data.id_token); }
+            if (data.expires_in) { localStorage.setItem("expires_in", data.expires_in); }
+            if (data.refresh_token) { localStorage.setItem("refresh_token", data.refresh_token); }
+
+            localStorage.setItem("authenticated", true);
+
+            // Redirect to UI app home.
+            document.location.replace(`${document.location.origin}/`)
+        });
+
+    } catch(errorOuter) {
+        console.log("Callback: Caught outer error:", errorOuter)
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", (event) => {main(event)}, false);
+
+</script>
+
+</body>
+
+</html>

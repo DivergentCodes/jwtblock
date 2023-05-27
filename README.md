@@ -3,7 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/divergentcodes/jwt-block.svg)](https://pkg.go.dev/github.com/divergentcodes/jwt-block)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/DivergentCodes/jwt-block/release.yaml?style=flat-square)](https://github.com/DivergentCodes/jwt-block/actions?query=workflow%3Arelease)
 
-A JWT blocklist using Go and Redis.
+Exploring the feasability and performance of a JWT blocklist.
 
 ## About
 
@@ -15,6 +15,12 @@ It is a standalone binary that requires a Redis instance to store the blocklist.
 
 Download the [binary release](https://github.com/DivergentCodes/jwt-block/releases) for your platform,
 and place it in the executable path.
+
+JWT Block is also available as a Docker image.
+
+```
+docker run -it --rm divergentcodes/jwt-block:latest
+```
 
 
 ## Usage

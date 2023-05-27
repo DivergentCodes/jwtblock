@@ -50,3 +50,7 @@ snapshot:
 # Create a release for supported platforms.
 release:
 	./scripts/release.sh
+
+# Push the Docker image to the repository.
+docker_push:
+	./scripts/docker_push.sh

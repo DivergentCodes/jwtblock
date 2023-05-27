@@ -15,8 +15,8 @@ var (
 
 	SuccessTokenBlocked   = "Token blocked"
 	SuccessTokenUnblocked = "Token unblocked"
-	SuccessTokenExists    = "Token exists in the blocklist"
-	SuccessTokenNotExists = "Token is not in the blocklist"
+	SuccessTokenExists    = "Token already blocked"
+	SuccessTokenNotExists = "Token is not blocked"
 	SuccessTokenIsAllowed = "JWT is allowed"
 	SuccessTokenIsBlocked = "JWT is blocked"
 

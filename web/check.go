@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -16,65 +17,109 @@ import (
 func jwtCheck(w http.ResponseWriter, r *http.Request) {
 	logger := core.GetLogger()
 	var result blocklist.CheckResult
+	var err, tokenErr, hashErr error
 
-	// Only allow POST.
-	if r.Method != http.MethodPost {
-		WriteErrorResponse(w, ErrHttpMethodOnlyPost.Error(), http.StatusMethodNotAllowed)
+	httpStatusAllow := viper.GetInt(core.OptStr_HttpStatusOnAllowed)
+	httpStatusDeny := viper.GetInt(core.OptStr_HttpStatusOnBlocked)
+
+	// Handle CORS preflight requests.
+	if r.Method == http.MethodOptions {
+		WriteCorsPreflightResponse(r, w)
 		return
 	}
 
-	// Request parsing.
-	var payload JwtRequestBody
-	err := json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil || (payload.Jwt == "" && payload.Sha256 == "") {
-		WriteErrorResponse(w, ErrMissingInvalidToken.Error(), http.StatusBadRequest)
+	// Only allow GET.
+	if r.Method != http.MethodGet {
+		WriteErrorResponse(r, w, ErrHttpMethodOnlyGet.Error(), http.StatusMethodNotAllowed)
+		return
 	}
 
-	logger.Debugw(
-		"Blocklist check",
-		"request_jwt", payload.Jwt,
-		"request_sha256", payload.Sha256,
-	)
-
-	// Blocklist lookup by JWT or sha256.
-	redisDB := cache.GetRedisClient()
-	if payload.Jwt != "" {
-		result, err = blocklist.CheckByJwt(redisDB, payload.Jwt)
-	} else if payload.Sha256 != "" {
-		result, err = blocklist.CheckBySha256(redisDB, payload.Sha256)
+	// Get token or hash from headers.
+	var tokenString, hashString string
+	tokenString, tokenErr = parseTokenFromHeader(r)
+	if tokenErr != nil {
+		hashString, hashErr = parseHashFromHeader(r)
 	}
 
-	// Handle errors.
-	if err != nil {
-		logger.Debugw(
-			"Web token check error",
-			"err", err.Error(),
+	// No token or hash found in headers.
+	if tokenErr != nil && hashErr != nil {
+		msg := "failed to get token or hash from request headers"
+		logger.Errorw(
+			msg,
+			"func", "web.jwtCheck",
+			"tokenError", tokenErr.Error(),
+			"hashError", hashErr.Error(),
 		)
+		DebugLogIncomingRequest(r)
+		WriteErrorResponse(r, w, msg, httpStatusDeny)
+		return
+	}
+
+	// Blocklist lookup.
+	redisDB := cache.GetRedisClient()
+	if tokenString != "" {
+		// Lookup by JWT.
+		logger.Debugw(
+			"found token in Authorization HTTP header",
+			"func", "web.jwtCheck",
+			"token", tokenString,
+		)
+		result, err = blocklist.CheckByJwt(redisDB, tokenString)
+	} else if hashString != "" {
+		// Lookup by SHA256 hash.
+		hashHeaderName := viper.GetString(core.OptStr_HttpHeaderSha256)
+		msg := fmt.Sprintf("found sha256 hash in %s HTTP header", hashHeaderName)
+		logger.Debugw(
+			msg,
+			"func", "web.jwtCheck",
+			"sha256", hashString,
+		)
+		result, err = blocklist.CheckBySha256(redisDB, hashString)
+	}
+
+	// Handle lookup errors.
+	if err != nil {
 		if strings.Contains(err.Error(), "Cache") {
+			// Cache error.
+			logger.Errorw(
+				"web token check error",
+				"func", "web.jwtCheck",
+				"err", err.Error(),
+			)
+			err = blocklist.ErrMisconfiguredCache
 			httpStatus := http.StatusInternalServerError
-			WriteErrorResponse(w, blocklist.ErrMisconfiguredCache.Error(), httpStatus)
+			WriteErrorResponse(r, w, err.Error(), httpStatus)
 		} else {
-			httpStatus := http.StatusBadRequest
-			WriteErrorResponse(w, err.Error(), httpStatus)
+			// Operational error.
+			WriteErrorResponse(r, w, err.Error(), httpStatusDeny)
 		}
 		return
 	}
 
-	// Response.
+	// Valid response.
+	allowed, allowedOrigin := isCorsRequestAllowed(r)
+	if allowed {
+		addCorsResponseHeaders(w, allowedOrigin)
+	}
 	w.Header().Set("Content-Type", "application/json")
 	if result.IsBlocked {
-		status_code := viper.GetInt(core.OptStr_HttpStatusOnBlocked)
-		w.WriteHeader(status_code)
+		w.WriteHeader(httpStatusDeny)
 	} else {
-		status_code := viper.GetInt(core.OptStr_HttpStatusOnAllowed)
-		w.WriteHeader(status_code)
+		w.WriteHeader(httpStatusAllow)
 	}
 	err = json.NewEncoder(w).Encode(result)
 	if err != nil {
 		logger.Errorw(
 			"failed to JSON encode response data",
+			"func", "web.jwtCheck",
 			"data", result,
 			"error", err,
+		)
+	} else {
+		logger.Debugw(
+			"successful lookup",
+			"func", "web.jwtCheck",
+			"data", result,
 		)
 	}
 }

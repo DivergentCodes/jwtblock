@@ -75,13 +75,6 @@ func RunJwtChecks(tokenString string) (jwt.Token, error) {
 	logger := core.GetLogger()
 	var token jwt.Token
 
-	logger.Debugw(
-		"JWT parsing config",
-		core.OptStr_JwtParseEnabled, viper.GetBool(core.OptStr_JwtParseEnabled),
-		core.OptStr_JwtValidateEnabled, viper.GetBool(core.OptStr_JwtValidateEnabled),
-		core.OptStr_JwtVerifyEnabled, viper.GetBool(core.OptStr_JwtVerifyEnabled),
-	)
-
 	doParse := viper.GetBool(core.OptStr_JwtParseEnabled)
 	if doParse {
 		jwtParserOptions, err := getJwtParserOptions()
@@ -91,7 +84,11 @@ func RunJwtChecks(tokenString string) (jwt.Token, error) {
 
 		token, err = jwt.Parse([]byte(tokenString), jwtParserOptions...)
 		if err != nil {
-			logger.Errorw("Failed to parse token", "error", err.Error())
+			logger.Errorw(
+				"Failed to parse token",
+				"func", "crypto.RunJwtChecks",
+				"error", err.Error(),
+			)
 			return nil, err
 		}
 	}
