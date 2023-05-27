@@ -28,12 +28,6 @@ var (
 	ErrMalformedBearerTokenFormat = errors.New("malformed bearer token format")
 )
 
-// A JwtRequestBody is for passing a JWT *or* a hash  in an API request body.
-type JwtRequestBody struct {
-	Jwt    string `json:"jwt"`    // a passed JWT for blocking or lookup.
-	Sha256 string `json:"sha256"` // a passed hash for blocking or lookup.
-}
-
 // A StandardResponse has the expected fields in a API response body.
 type StandardResponse struct {
 	Message string `json:"message"` // the response message.
