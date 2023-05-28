@@ -35,6 +35,12 @@ jobs:
         with:
           go-version: stable
 
+      - name: Docker registry login
+        run: make docker_login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_API_KEY: ${{ secrets.DOCKER_API_KEY }}
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
@@ -49,10 +55,4 @@ jobs:
         run: go list -m "github.com/divergentcodes/jwt-block@${{ github.ref_name }}"
         env:
           GOPROXY: proxy.golang.org
-
-      - name: Push Docker image
-        run: make docker-push
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_API_KEY: ${{ secrets.DOCKER_API_KEY }}
 
