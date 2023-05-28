@@ -51,6 +51,6 @@ snapshot:
 release:
 	./scripts/release.sh
 
-# Push the Docker image to the repository.
-docker_push:
-	./scripts/docker_push.sh
+# Login to the Docker registry.
+docker_login:
+	./scripts/docker_login.sh
