@@ -87,8 +87,8 @@ changelog:
     - title: 'Enhancements'
       regexp: '^.*?enhance(\([[:word:]]+\))??!?:.+$'
       order: 1
-    - title: 'Bug fixes'
-      regexp: '^.*?bug(\([[:word:]]+\))??!?:.+$'
+    - title: 'Fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
       order: 2
     # - title: Others
     #   order: 999
