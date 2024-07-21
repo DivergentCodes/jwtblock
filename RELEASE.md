@@ -17,7 +17,7 @@ A new binary will be built, a Docker image and documentation with be pushed.
 
 Pull the latest image: `docker pull divergentcodes/jwt-block:latest`
 
-View the latest binary release: https://hub.docker.com/r/divergentcodes/jwt-block/latest
+View the latest Docker release: https://hub.docker.com/r/divergentcodes/jwt-block
 
 
 ## Changelog Updates
