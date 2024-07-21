@@ -1,0 +1,8 @@
+{
+  "clientId": "demo",
+  "authorizeEndpoint": "http://keycloak.localhost/realms/demo/protocol/openid-connect/auth",
+  "callbackEndpoint": "http://ui-app.localhost/oauth2/callback",
+  "tokenEndpoint": "http://keycloak.localhost/realms/demo/protocol/openid-connect/token",
+  "protectedEndpoint": "http://api.localhost/json",
+  "logoutEndpoint": "http://jwtblock.localhost/blocklist/block"
+}
