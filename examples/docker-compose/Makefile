@@ -3,7 +3,7 @@
 all: start
 
 start:
-	cd ../../; bash ./scripts/build.sh
+	cd ../../; GOOS="linux" GOARCH="amd64" bash ./scripts/build.sh
 	docker compose down
 	docker compose up --build --force-recreate
 
