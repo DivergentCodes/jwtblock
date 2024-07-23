@@ -130,7 +130,7 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 func checkGenerateOpenAPI(reflector *openapi3.Reflector) {
 	logger := core.GetLogger()
 
-	checkOp, err := reflector.NewOperationContext(http.MethodPost, "/blocklist/check")
+	checkOp, err := reflector.NewOperationContext(http.MethodGet, "/blocklist/check")
 	if err != nil {
 		logger.Fatalw(err.Error())
 	}
