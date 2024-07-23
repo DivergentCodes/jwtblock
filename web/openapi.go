@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 
+	"github.com/divergentcodes/jwt-block/internal/core"
 	"github.com/swaggest/openapi-go/openapi3"
 )
 
@@ -10,14 +11,31 @@ import (
 func GenerateOpenAPI(format string) (string, error) {
 	reflector := openapi3.Reflector{}
 
-	// Declare security scheme.
-	securityName := "bearer_token"
-	reflector.SpecEns().SetHTTPBearerTokenSecurity(securityName, "JWT", "Access token")
+	// Basic info.
+	reflector.Spec = &openapi3.Spec{
+		Openapi: "3.0.3",
+	}
+	reflector.Spec.Info.
+		WithTitle("JWT Block").
+		WithVersion(core.Version).
+		WithDescription("API of the JWT Block service")
 
-	// Endpoints
+	// Base URL.
+	server := openapi3.Server{
+		URL: "http://jwtblock.localhost",
+	}
+	reflector.Spec.Servers = append(reflector.Spec.Servers, server)
+
+	// Declare security scheme.
+	securityName := "bearerToken"
+	reflector.Spec.SetHTTPBearerTokenSecurity(securityName, "JWT", "Access token")
+	reflector.Spec.WithSecurity(map[string][]string{securityName: {}})
+
+	// Endpoints.
 	blockGenerateOpenAPI(&reflector)
 	checkGenerateOpenAPI(&reflector)
 
+	// Dump the schema.
 	var schema []byte
 	var err error
 	if format == "json" {
