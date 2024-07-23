@@ -12,10 +12,11 @@ func GenerateOpenAPI(format string) (string, error) {
 
 	// Declare security scheme.
 	securityName := "bearer_token"
-	reflector.SpecEns().SetHTTPBearerTokenSecurity(securityName, "JWT", "Admin Access")
+	reflector.SpecEns().SetHTTPBearerTokenSecurity(securityName, "JWT", "Access token")
 
 	// Endpoints
 	blockGenerateOpenAPI(&reflector)
+	checkGenerateOpenAPI(&reflector)
 
 	var schema []byte
 	var err error
