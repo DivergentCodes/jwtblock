@@ -80,7 +80,7 @@ func initRootFlags() {
 
 	// json
 	defaultOutJSON := viper.GetBool(core.OptStr_OutJSON)
-	rootCmd.PersistentFlags().Bool("json", defaultOutJSON, "Use JSON output")
+	rootCmd.PersistentFlags().Bool("json", defaultOutJSON, "Use JSON log output")
 	err = viper.BindPFlag(core.OptStr_OutJSON, rootCmd.PersistentFlags().Lookup("json"))
 	if err != nil {
 		panic(err)
