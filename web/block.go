@@ -1,13 +1,14 @@
 package web
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"github.com/divergentcodes/jwt-block/internal/blocklist"
 	"github.com/divergentcodes/jwt-block/internal/cache"
 	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/swaggest/openapi-go"
+	"github.com/swaggest/openapi-go/openapi3"
 )
 
 // Handler for /blocklist/block
@@ -64,19 +65,19 @@ func jwtBlock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Response.
-	allowed, allowedOrigin := isCorsRequestAllowed(r)
-	if allowed {
-		addCorsResponseHeaders(w, allowedOrigin)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(result)
+	WriteSuccessResponse(r, w, result.Message, 200)
+}
+
+// OpenAPI documentation generation.
+func blockGenerateOpenAPI(reflector *openapi3.Reflector) {
+	logger := core.GetLogger()
+
+	blockOp, err := reflector.NewOperationContext(http.MethodPost, "/blocklist/block")
 	if err != nil {
-		logger.Errorw(
-			"failed to JSON encode response data",
-			"func", "web.jwtBlock",
-			"data", result,
-			"error", err,
-		)
+		logger.Fatalw(err.Error())
 	}
+
+	blockOp.AddRespStructure(new(blocklist.BlockResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = http.StatusOK })
+
+	reflector.AddOperation(blockOp)
 }
