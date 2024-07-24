@@ -140,5 +140,8 @@ func checkGenerateOpenAPI(reflector *openapi3.Reflector) {
 		checkOp.AddRespStructure(new(blocklist.CheckResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = status })
 	}
 
-	reflector.AddOperation(checkOp)
+	err = reflector.AddOperation(checkOp)
+	if err != nil {
+		logger.Fatalw(err.Error())
+	}
 }

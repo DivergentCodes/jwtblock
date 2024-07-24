@@ -18,8 +18,13 @@ var openapiCmd = &cobra.Command{
 }
 
 func init() {
-	openapiCmd.PersistentFlags().String("format", "yaml", "A string flag with limited values (value1, value2)")
-	viper.BindPFlag("format", openapiCmd.PersistentFlags().Lookup("format"))
+	logger := core.GetLogger()
+
+	openapiCmd.PersistentFlags().String("format", "yaml", "format for OpenAPI specs (yaml or json)")
+	err := viper.BindPFlag("format", openapiCmd.PersistentFlags().Lookup("format"))
+	if err != nil {
+		logger.Fatalw(err.Error())
+	}
 
 	rootCmd.AddCommand(openapiCmd)
 }

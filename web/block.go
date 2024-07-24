@@ -82,5 +82,8 @@ func blockGenerateOpenAPI(reflector *openapi3.Reflector) {
 		blockOp.AddRespStructure(new(blocklist.BlockResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = status })
 	}
 
-	reflector.AddOperation(blockOp)
+	err = reflector.AddOperation(blockOp)
+	if err != nil {
+		logger.Fatalw(err.Error())
+	}
 }
