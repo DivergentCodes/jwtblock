@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/divergentcodes/jwt-block/internal/blocklist"
-	"github.com/divergentcodes/jwt-block/internal/crypto"
+	"github.com/divergentcodes/jwtblock/internal/blocklist"
+	"github.com/divergentcodes/jwtblock/internal/crypto"
 )
 
 func Test_Check_ValidTokenAllowed_Success(t *testing.T) {

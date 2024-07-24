@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/blocklist"
-	"github.com/divergentcodes/jwt-block/internal/cache"
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/blocklist"
+	"github.com/divergentcodes/jwtblock/internal/cache"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 var (

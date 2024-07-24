@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/cache"
-	"github.com/divergentcodes/jwt-block/internal/core"
-	"github.com/divergentcodes/jwt-block/web"
+	"github.com/divergentcodes/jwtblock/internal/cache"
+	"github.com/divergentcodes/jwtblock/internal/core"
+	"github.com/divergentcodes/jwtblock/web"
 )
 
 var (
@@ -82,6 +82,6 @@ func serve(cmd *cobra.Command, args []string) {
 
 	host := viper.GetString(core.OptStr_HttpHostname)
 	port := viper.GetInt(core.OptStr_HttpPort)
-	fmt.Printf("Serving the jwt-block web API on %s:%d\n", host, port)
+	fmt.Printf("Serving the jwtblock web API on %s:%d\n", host, port)
 	web.HandleRequests(host, port)
 }

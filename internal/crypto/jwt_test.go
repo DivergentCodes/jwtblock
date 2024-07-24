@@ -7,7 +7,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 var rsaPublicKey string = `-----BEGIN PUBLIC KEY-----

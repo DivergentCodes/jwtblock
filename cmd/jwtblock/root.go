@@ -3,7 +3,7 @@ JWT Block is a blocklist & auth proxy service for JWTs, to support immediate ter
 
 Usage:
 
-	jwt-block [command]
+	jwtblock [command]
 
 Available Commands:
 
@@ -16,13 +16,13 @@ Available Commands:
 	serve       Serve the web API
 	status      Get status of the blocklist
 	unblock     Unblock a JWT
-	version     Print the version of jwt-block
+	version     Print the version of jwtblock
 
 Flags:
 
-	    --config string       config file (default is ./jwt-block.yaml)
+	    --config string       config file (default is ./jwtblock.yaml)
 	    --debug               Enable debug mode
-	-h, --help                help for jwt-block
+	-h, --help                help for jwtblock
 	    --json                Use JSON output
 	-q, --quiet               Quiet CLI output
 	    --redis-dbnum int     Redis DB number
@@ -42,12 +42,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "jwt-block",
+		Use:   "jwtblock",
 		Short: "A JWT blocklist & auth proxy service",
 		Long:  `JWT Block is a blocklist & auth proxy service for JWTs, to support immediate termination of access, since access tokens cannot truly be revoked.`,
 	}
@@ -64,7 +64,7 @@ func initRootFlags() {
 
 	// config
 	var cfgFile string
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./jwt-block.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./jwtblock.yaml)")
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 	"github.com/spf13/viper"
 )
 

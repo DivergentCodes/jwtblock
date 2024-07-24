@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 	"github.com/swaggest/openapi-go/openapi3"
 )
 

@@ -3,7 +3,7 @@ package blocklist
 import (
 	"github.com/redis/go-redis/v9"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 // A FlushResult contains the result of checking for a token in the blocklist.

@@ -1,7 +1,7 @@
 # GoReleaser configuration.
 # Documentation: https://goreleaser.com
 
-project_name: jwt-block
+project_name: jwtblock
 
 before:
   hooks:
@@ -24,10 +24,10 @@ builds:
       # -w  disable DWARF generation
       - '-w'
       # -X  set module variables at build time
-      - '-X github.com/divergentcodes/jwt-block/internal/core.Version={{.Version}}'
-      - '-X github.com/divergentcodes/jwt-block/internal/core.Commit={{.Commit}}'
-      - '-X github.com/divergentcodes/jwt-block/internal/core.Date={{.Date}}'
-      - '-X github.com/divergentcodes/jwt-block/internal/core.BuiltBy=goreleaser'
+      - '-X github.com/divergentcodes/jwtblock/internal/core.Version={{.Version}}'
+      - '-X github.com/divergentcodes/jwtblock/internal/core.Commit={{.Commit}}'
+      - '-X github.com/divergentcodes/jwtblock/internal/core.Date={{.Date}}'
+      - '-X github.com/divergentcodes/jwtblock/internal/core.BuiltBy=goreleaser'
 
 dockers:
   -
