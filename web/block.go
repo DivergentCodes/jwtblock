@@ -77,7 +77,10 @@ func blockGenerateOpenAPI(reflector *openapi3.Reflector) {
 		logger.Fatalw(err.Error())
 	}
 
-	blockOp.AddRespStructure(new(blocklist.BlockResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = http.StatusOK })
+	statusCodes := []int{http.StatusOK, http.StatusUnauthorized}
+	for _, status := range statusCodes {
+		blockOp.AddRespStructure(new(blocklist.BlockResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = status })
+	}
 
 	reflector.AddOperation(blockOp)
 }

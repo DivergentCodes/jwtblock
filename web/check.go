@@ -135,7 +135,10 @@ func checkGenerateOpenAPI(reflector *openapi3.Reflector) {
 		logger.Fatalw(err.Error())
 	}
 
-	checkOp.AddRespStructure(new(blocklist.CheckResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = http.StatusOK })
+	statusCodes := []int{http.StatusOK, http.StatusUnauthorized}
+	for _, status := range statusCodes {
+		checkOp.AddRespStructure(new(blocklist.CheckResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = status })
+	}
 
 	reflector.AddOperation(checkOp)
 }
