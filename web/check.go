@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+	"github.com/swaggest/openapi-go"
+	"github.com/swaggest/openapi-go/openapi3"
 
 	"github.com/divergentcodes/jwt-block/internal/blocklist"
 	"github.com/divergentcodes/jwt-block/internal/cache"
@@ -121,5 +123,25 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			"func", "web.jwtCheck",
 			"data", result,
 		)
+	}
+}
+
+// OpenAPI documentation generation.
+func checkGenerateOpenAPI(reflector *openapi3.Reflector) {
+	logger := core.GetLogger()
+
+	checkOp, err := reflector.NewOperationContext(http.MethodGet, "/blocklist/check")
+	if err != nil {
+		logger.Fatalw(err.Error())
+	}
+
+	statusCodes := []int{http.StatusOK, http.StatusUnauthorized}
+	for _, status := range statusCodes {
+		checkOp.AddRespStructure(new(blocklist.CheckResult), func(cu *openapi.ContentUnit) { cu.HTTPStatus = status })
+	}
+
+	err = reflector.AddOperation(checkOp)
+	if err != nil {
+		logger.Fatalw(err.Error())
 	}
 }
