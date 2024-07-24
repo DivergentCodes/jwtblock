@@ -6,14 +6,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
-	"github.com/divergentcodes/jwt-block/web"
+	"github.com/divergentcodes/jwtblock/internal/core"
+	"github.com/divergentcodes/jwtblock/web"
 )
 
 var openapiCmd = &cobra.Command{
 	Use:   "openapi",
-	Short: "Generate OpenAPI specs for jwt-block",
-	Long:  "Generate OpenAPI specs for jwt-block",
+	Short: "Generate OpenAPI specs for jwtblock",
+	Long:  "Generate OpenAPI specs for jwtblock",
 	Run:   openapi,
 }
 

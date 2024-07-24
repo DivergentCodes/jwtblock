@@ -10,9 +10,9 @@ import (
 	"github.com/swaggest/openapi-go"
 	"github.com/swaggest/openapi-go/openapi3"
 
-	"github.com/divergentcodes/jwt-block/internal/blocklist"
-	"github.com/divergentcodes/jwt-block/internal/cache"
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/blocklist"
+	"github.com/divergentcodes/jwtblock/internal/cache"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 // Handler for /blocklist/check

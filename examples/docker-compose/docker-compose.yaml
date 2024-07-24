@@ -83,12 +83,12 @@ services:
 
   # The JWT Block auth service.
   jwtblock:
-    image: "divergentcodes/jwt-block:local"
+    image: "divergentcodes/jwtblock:local"
     build:
       context: "./../../"
       dockerfile: "Dockerfile"
       args:
-        - SRC_BIN_DIR=./dist/jwt-block_linux_amd64_v1
+        - SRC_BIN_DIR=./dist/jwtblock_linux_amd64_v1
     environment:
       - JWTBLOCK_DEBUG=1
       - JWTBLOCK_REDIS_HOST=cache

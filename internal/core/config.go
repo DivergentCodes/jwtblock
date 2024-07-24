@@ -110,7 +110,7 @@ func initConfigFile() {
 
 	// Use default config file location.
 	viper.AddConfigPath(".")
-	viper.SetConfigName(".jwt-block")
+	viper.SetConfigName(".jwtblock")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {

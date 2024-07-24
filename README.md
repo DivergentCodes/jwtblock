@@ -1,7 +1,7 @@
 # JWT Block
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/divergentcodes/jwt-block.svg)](https://pkg.go.dev/github.com/divergentcodes/jwt-block)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/DivergentCodes/jwt-block/release.yaml?style=flat-square)](https://github.com/DivergentCodes/jwt-block/actions?query=workflow%3Arelease)
+[![Go Reference](https://pkg.go.dev/badge/github.com/divergentcodes/jwtblock.svg)](https://pkg.go.dev/github.com/divergentcodes/jwtblock)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/DivergentCodes/jwtblock/release.yaml?style=flat-square)](https://github.com/DivergentCodes/jwtblock/actions?query=workflow%3Arelease)
 
 Exploring the feasability and performance of a JWT blocklist.
 
@@ -13,13 +13,13 @@ It is a standalone binary that requires a Redis instance to store the blocklist.
 
 ## Installation
 
-Download the [binary release](https://github.com/DivergentCodes/jwt-block/releases) for your platform,
+Download the [binary release](https://github.com/DivergentCodes/jwtblock/releases) for your platform,
 and place it in the executable path.
 
-JWT Block is also available as [a Docker image](https://hub.docker.com/r/divergentcodes/jwt-block).
+JWT Block is also available as [a Docker image](https://hub.docker.com/r/divergentcodes/jwtblock).
 
 ```
-docker run -it --rm divergentcodes/jwt-block:latest
+docker run -it --rm divergentcodes/jwtblock:latest
 ```
 
 
@@ -29,7 +29,7 @@ docker run -it --rm divergentcodes/jwt-block:latest
 JWT Block is a blocklist & auth proxy service for JWTs, to support immediate termination of access, since access tokens cannot truly be revoked.
 
 Usage:
-  jwt-block [command]
+  jwtblock [command]
 
 Available Commands:
   block       Block a JWT
@@ -41,12 +41,12 @@ Available Commands:
   serve       Serve the web API
   status      Get status of the blocklist
   unblock     Unblock a JWT
-  version     Print the version of jwt-block
+  version     Print the version of jwtblock
 
 Flags:
-      --config string       config file (default is ./jwt-block.yaml)
+      --config string       config file (default is ./jwtblock.yaml)
       --debug               Enable debug mode
-  -h, --help                help for jwt-block
+  -h, --help                help for jwtblock
       --json                Use JSON output
   -q, --quiet               Quiet CLI output
       --redis-dbnum int     Redis DB number
@@ -58,7 +58,7 @@ Flags:
       --redis-user string   Redis username
       --verbose             Verbose CLI output
 
-Use "jwt-block [command] --help" for more information about a command.
+Use "jwtblock [command] --help" for more information about a command.
 ```
 
 ## Configuration

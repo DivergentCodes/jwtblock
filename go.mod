@@ -1,4 +1,4 @@
-module github.com/divergentcodes/jwt-block
+module github.com/divergentcodes/jwtblock
 
 go 1.20
 

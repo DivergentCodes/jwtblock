@@ -7,8 +7,8 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
-	"github.com/divergentcodes/jwt-block/internal/crypto"
+	"github.com/divergentcodes/jwtblock/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/crypto"
 )
 
 // A BlockResult contains the result of trying to block a token.

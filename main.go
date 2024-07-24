@@ -1,8 +1,8 @@
 package main
 
 import (
-	cmd "github.com/divergentcodes/jwt-block/cmd/jwt-block"
-	"github.com/divergentcodes/jwt-block/internal/core"
+	cmd "github.com/divergentcodes/jwtblock/cmd/jwtblock"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 func init() {

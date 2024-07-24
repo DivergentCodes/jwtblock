@@ -5,13 +5,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/divergentcodes/jwt-block/internal/core"
+	"github.com/divergentcodes/jwtblock/internal/core"
 )
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version of jwt-block",
-	Long:  `Print the version of jwt-block`,
+	Short: "Print the version of jwtblock",
+	Long:  `Print the version of jwtblock`,
 	Run:   version,
 }
 

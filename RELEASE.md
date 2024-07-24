@@ -15,9 +15,9 @@ git tag "v1.0.2-alpha03"; git push --tags
 The `release` Github Actions workflow will be triggered, running GoReleaser.
 A new binary will be built, a Docker image and documentation with be pushed.
 
-Pull the latest image: `docker pull divergentcodes/jwt-block:latest`
+Pull the latest image: `docker pull divergentcodes/jwtblock:latest`
 
-View the latest Docker release: https://hub.docker.com/r/divergentcodes/jwt-block
+View the latest Docker release: https://hub.docker.com/r/divergentcodes/jwtblock
 
 
 ## Changelog Updates
@@ -32,10 +32,10 @@ To be included in a changelog, PR titles must be one of these prefixes:
 
 ## Links
 
-- Binary downloads: https://github.com/DivergentCodes/jwt-block/releases
+- Binary downloads: https://github.com/DivergentCodes/jwtblock/releases
 
-- Docker images: https://hub.docker.com/r/divergentcodes/jwt-block
+- Docker images: https://hub.docker.com/r/divergentcodes/jwtblock
 
-- JWT Block docs: https://pkg.go.dev/github.com/divergentcodes/jwt-block
+- JWT Block docs: https://pkg.go.dev/github.com/divergentcodes/jwtblock
 
 
