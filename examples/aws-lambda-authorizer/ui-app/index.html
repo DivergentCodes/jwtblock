@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <title>Demo OIDC UI App</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="styles.css">
+    <script src="/oidc.js"></script>
+</head>
+
+<body id="body">
+
+    <h1> Demo OIDC UI App </h1>
+
+    <h2> OIDC Identity Provider (IdP) Configuration </h2>
+    <section>
+        <button id="btnLogin" onclick="oidcLogin_initAuthCodeFlow()">Login</button>
+        <br/> <br/>
+
+        <label for="txtClientId">Client ID:</label>
+        <p id="txtClientId" name="txtClientId"></p>
+
+        <label for="txtAuthorizationEndpoint">Authorization Endpoint:</label>
+        <p id="txtAuthorizationEndpoint" name="txtAuthorizationEndpoint"></p>
+
+        <label for="txtCallbackEndpoint">Callback Endpoint:</label>
+        <p id="txtCallbackEndpoint" name="txtCallbackEndpoint"></p>
+
+        <label for="txtTokenEndpoint">Token Endpoint:</label>
+        <p id="txtTokenEndpoint" name="txtTokenEndpoint"></p>
+
+    </section>
+
+
+    <h2> API Data </h2>
+    <section>
+        <button id="btnCallProtectedApi" onclick="callProtectedApi()">Call API</button>
+        <br/>
+
+        <label for="txtProtectedEndpoint">Protected Endpoint:</label>
+        <p id="txtProtectedEndpoint" name="txtProtectedEndpoint"></p>
+
+        <label for="txtApiResponseStatus">Response Status:</label>
+        <p id="txtApiResponseStatus" name="txtApiResponseStatus"></p>
+
+    </section>
+
+
+    <h2> Logout (block JWT)</h2>
+    <section>
+        <button id="btnLogout" onclick="oidcLogout()">Logout</button>
+        <br/>
+
+        <label for="txtLogoutEndpoint">Logout Endpoint:</label>
+        <p id="txtLogoutEndpoint" name="txtLogoutEndpoint"></p>
+
+        <label for="txtBlockResponseStatus">Response Status:</label>
+        <p id="txtBlockResponseStatus" name="txtBlockResponseStatus"></p>
+
+    </section>
+
+
+    <h2> Tokens </h2>
+    <section>
+        <button id="btnReset" onclick="resetAppState()">Clear State</button>
+        <br/> <br/>
+
+        <h3>Access Token (Decoded)</h3>
+        <pre> <code id="codeAccessTokenDecoded"></code> </pre>
+
+        <h3>Access Token</h3>
+        <code id="codeAccessToken"></code>
+
+        <h3>ID Token (Decoded)</h3>
+        <pre> <code id="codeIdTokenDecoded"></code> </pre>
+
+        <h3>ID Token</h3>
+        <code id="codeIdToken"></code>
+
+        <h3>Refresh Token</h3>
+        <code id="codeRefreshToken"></code>
+
+    </section>
+
+<script>
+
+/*******************************************************************************
+ * Event listeners setup on each page load.
+ ******************************************************************************/
+
+// Trigger request handler on initial page load.
+document.addEventListener("DOMContentLoaded", (event) => {handleRequest(event)}, false);
+
+// Trigger request handler when front end fragment route changes due to user interaction.
+window.addEventListener("hashchange", (event) => {handleRequest(event)}, false);
+
+</script>
+
+</body>
+
+</html>

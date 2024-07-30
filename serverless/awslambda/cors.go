@@ -1,8 +1,6 @@
-package web
+package awslambda
 
 import (
-	"errors"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -11,75 +9,51 @@ import (
 )
 
 // Write a CORS preflight response depending on the Origin header.
-func WriteCorsPreflightResponse(r *http.Request, w http.ResponseWriter) {
+func makeCorsPreflightHeaders(origin string, headers map[string]string) map[string]string {
 	logger := core.GetLogger()
 
-	corsAllowed, allowedOrigin := isCorsRequestAllowed(r)
+	corsAllowed, allowedOrigin := isCorsRequestAllowed(origin)
 	if corsAllowed {
 		logger.Debugw(
 			"cors preflight response allow headers added",
-			"func", "writeCorsPreflightResponse",
+			"func", "makeCorsPreflightHeaders",
 			"origin", allowedOrigin,
 		)
-		addCorsResponseHeaders(w, allowedOrigin)
+		return addCorsResponseHeaders(headers, allowedOrigin)
 	} else {
 		logger.Debugw(
 			"cors preflight response headers not added",
-			"func", "writeCorsPreflightResponse",
+			"func", "makeCorsPreflightHeaders",
 		)
 	}
-
-	w.WriteHeader(http.StatusNoContent)
+	return nil
 }
 
 // Add CORS allow response headers for given origin.
-func addCorsResponseHeaders(w http.ResponseWriter, origin string) {
+func addCorsResponseHeaders(headers map[string]string, origin string) map[string]string {
 	corsMaxSeconds := viper.GetViper().GetInt(core.OptStr_HttpCorsMaxSeconds)
 
-	w.Header().Set("Access-Control-Allow-Origin", origin)
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Access-Control-Allow-Headers", "Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
-	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,GET,POST")
-	w.Header().Set("Access-Control-Max-Age", strconv.Itoa(corsMaxSeconds))
-}
+	headers["Access-Control-Allow-Origin"] = origin
+	headers["Access-Control-Allow-Credentials"] = "true"
+	headers["Access-Control-Allow-Headers"] = "Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
+	headers["Access-Control-Allow-Methods"] = "OPTIONS,GET,POST"
+	headers["Access-Control-Max-Age"] = strconv.Itoa(corsMaxSeconds)
 
-// Get the Origin header, if it exists.
-func getOriginHeader(r *http.Request) (string, error) {
-	logger := core.GetLogger()
-
-	// Get client origin from request.
-	originHeaderValueList, ok := r.Header["Origin"]
-	if !ok {
-		logger.Debugw(
-			"Preflight request has no origin",
-			"func", "getOriginHeader",
-		)
-		return "", errors.New("request has no origin header")
-	}
-	originHeaderValue := originHeaderValueList[len(originHeaderValueList)-1]
-	return originHeaderValue, nil
+	return headers
 }
 
 // Check if a request's origin is configured for CORS.
-func isCorsRequestAllowed(r *http.Request) (bool, string) {
+func isCorsRequestAllowed(origin string) (bool, string) {
 	logger := core.GetLogger()
 
-	originHeader, err := getOriginHeader(r)
-	if err == nil {
+	allowedOrigin := isCorsAllowedOrigin(origin)
+	if allowedOrigin != "" {
 		logger.Debugw(
-			"found request origin header",
+			"request origin allowed for CORS",
 			"func", "isCorsRequestAllowed",
-			"origin", originHeader,
+			"origin", allowedOrigin,
 		)
-		allowedOrigin := isCorsAllowedOrigin(originHeader)
-		if allowedOrigin != "" {
-			logger.Debugw(
-				"request origin allowed for CORS",
-				"func", "isCorsRequestAllowed",
-				"origin", allowedOrigin,
-			)
-			return true, allowedOrigin
-		}
+		return true, allowedOrigin
 	}
 	return false, ""
 }

@@ -36,12 +36,9 @@ modcheck:
 build:
 	./scripts/build.sh
 
-# Local installation of existing built executable.
-_build_install:
+# Local installation of executable.
+install:
 	./scripts/install.sh
-
-# Local build and installation of executable.
-install: build _build_install
 
 # Build point-in-time snapshot release.
 snapshot:

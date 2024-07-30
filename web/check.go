@@ -58,7 +58,7 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Blocklist lookup.
-	redisDB := cache.GetRedisClient()
+	redisClient := cache.GetRedisClient()
 	if tokenString != "" {
 		// Lookup by JWT.
 		logger.Debugw(
@@ -66,7 +66,7 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			"func", "web.jwtCheck",
 			"token", tokenString,
 		)
-		result, err = blocklist.CheckByJwt(redisDB, tokenString)
+		result, err = blocklist.CheckByJwt(redisClient, tokenString)
 	} else if hashString != "" {
 		// Lookup by SHA256 hash.
 		hashHeaderName := viper.GetString(core.OptStr_HttpHeaderSha256)
@@ -76,7 +76,7 @@ func jwtCheck(w http.ResponseWriter, r *http.Request) {
 			"func", "web.jwtCheck",
 			"sha256", hashString,
 		)
-		result, err = blocklist.CheckBySha256(redisDB, hashString)
+		result, err = blocklist.CheckBySha256(redisClient, hashString)
 	}
 
 	// Handle lookup errors.

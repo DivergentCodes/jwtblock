@@ -65,7 +65,7 @@ func jwtBlock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Response.
-	WriteSuccessResponse(r, w, result.Message, 200)
+	WriteSuccessResponse(r, w, result.Message, http.StatusOK)
 }
 
 // OpenAPI documentation generation.
