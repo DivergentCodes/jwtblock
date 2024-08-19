@@ -41,6 +41,7 @@ var (
 	OptStr_JwtVerifyEnabled    = "jwt.verify.enabled"
 	OptStr_JwtVerifyRsaKey     = "jwt.verify.rsa_key"
 	OptStr_JwtVerifyHmacSecret = "jwt.verify.hmac_secret"
+	OptStr_JwtVerifyJwksUrl    = "jwt.verify.jwks_url"
 
 	OptStr_JwtTTLDefaultSeconds    = "jwt.ttl.sec_default"
 	OptStr_JwtTTLSpecifiedSeconds  = "jwt.ttl.sec_specified"
@@ -56,6 +57,7 @@ func initBlocklistDefaults() {
 	viper.SetDefault(OptStr_JwtVerifyEnabled, false)
 	viper.SetDefault(OptStr_JwtVerifyRsaKey, "")
 	viper.SetDefault(OptStr_JwtVerifyHmacSecret, "")
+	viper.SetDefault(OptStr_JwtVerifyJwksUrl, "")
 
 	viper.SetDefault(OptStr_JwtTTLDefaultSeconds, 7200) // 2 hours
 	viper.SetDefault(OptStr_JwtTTLSpecifiedSeconds, -1)
