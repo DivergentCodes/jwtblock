@@ -17,12 +17,14 @@ type CheckResult struct {
 
 // CheckByJwt checks if a token's hash value is in the blocklist.
 //
-// The passed tokenString will be hashed and looked up.
+// The passed tokenString will be validated, hashed, and looked up.
 func CheckByJwt(redisDB *redis.Client, tokenString string) (CheckResult, error) {
 	// Parse, validate, verify the JWT.
 	var checkResult CheckResult
 	_, err := crypto.RunJwtChecks(tokenString)
 	if err != nil {
+		checkResult.IsError = true
+		checkResult.Message = err.Error()
 		return checkResult, err
 	}
 

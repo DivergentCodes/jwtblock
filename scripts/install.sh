@@ -3,7 +3,7 @@
 # Locally "install" the application by copying the binary to the GOPATH.
 # Get the binary name from the GoReleaser configuration file.
 
-binary_name=$(grep "project_name" .goreleaser.yaml | sed 's/project_name:[[:space:]]\+//')
+binary_name=$(grep "project_name:" .goreleaser.yaml | awk '{print $2}')
 echo "BIN:   [$binary_name]"
 
 os=$(go env GOOS)

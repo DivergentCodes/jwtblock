@@ -3,7 +3,7 @@
 ##########################################################
 
 examples/docker-compose/ui-app/config.json
-
+examples/aws-lambda-authorizer/bootstrap
 
 ##########################################################
 # Golang
